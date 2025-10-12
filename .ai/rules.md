@@ -38,6 +38,8 @@ A Pokemon card collection management app for a parent and child. Built with Next
 - `@supabase/supabase-js` - Database client
 - `clsx` - Conditional classnames
 - `tailwind-merge` - Merge Tailwind classes
+- `shadcn/ui` - UI component library (install as needed)
+- `lucide-react` - Icon library
 
 ---
 
@@ -55,6 +57,12 @@ npm run start
 
 # Run linting
 npm run lint
+
+# Add shadcn/ui component
+npx shadcn@latest add [component-name]
+
+# Example: Add button component
+npx shadcn@latest add button
 ```
 
 ---
@@ -284,7 +292,8 @@ src/components/ui/Button/
 - Install components to `src/components/ui/`
 - Customize after installation as needed
 - Keep modifications minimal and documented
-- Install command: `npx shadcn-ui@latest add [component]`
+- Install command: `npx shadcn@latest add [component]`
+- See full component library section below for details
 
 #### When to Extract a Component
 **Extract when:**
@@ -782,6 +791,197 @@ Respect `.gitignore` - never commit:
 
 ---
 
+## Security Considerations
+
+**Philosophy: Trust Framework Defaults + KISS**
+- Use trusted frameworks (Next.js, React, Supabase)
+- Avoid dangerous patterns
+- Add security layers only when needed
+- Don't over-engineer for threats that don't exist yet
+
+### Input Sanitization
+
+**SQL Injection: ✅ Protected**
+- Supabase uses parameterized queries automatically
+- No raw SQL from user input
+- Database constraints enforce data integrity
+
+**User Input (names, notes):**
+- React escapes output by default (safe)
+- No manual sanitization needed for display
+- Database constraints handle validation
+
+**What to avoid:**
+```tsx
+// ❌ NEVER use dangerouslySetInnerHTML with user input
+<div dangerouslySetInnerHTML={{ __html: userInput }} />
+
+// ✅ React escapes automatically
+<div>{userInput}</div>
+```
+
+### XSS (Cross-Site Scripting) Prevention
+
+**React's Default Protection: ✅ Safe**
+- React escapes all values by default
+- JSX prevents XSS automatically
+- No additional sanitization needed
+
+**Rules:**
+- Never use `dangerouslySetInnerHTML` with user content
+- Never use `eval()` or `Function()` constructor
+- Trust React's escaping
+
+### API Key Security
+
+**Current Setup: ✅ Secure**
+- `.env.local` in `.gitignore` (not committed)
+- `NEXT_PUBLIC_*` prefix for client-exposed keys
+- Supabase anon key is safe for client-side (RLS protects data)
+
+**Environment Variables:**
+```bash
+# ✅ Safe - Server-side only
+DATABASE_URL=secret
+
+# ✅ Safe - Client-side, protected by RLS
+NEXT_PUBLIC_SUPABASE_ANON_KEY=public_key
+
+# ❌ NEVER commit .env.local to git
+```
+
+**Checklist:**
+- [ ] `.env.local` in `.gitignore` ✅
+- [ ] No secrets in client-side code ✅
+- [ ] No API keys in commit history ✅
+
+### Authentication & Authorization
+
+**Phase 1: No Authentication**
+- Simple name-based user selection
+- No passwords or sensitive data
+- Suitable for family/personal use
+- All data is public within the app
+
+**Future (Phase 3+): Supabase Auth**
+- Add when multi-user/privacy needed
+- Supabase Auth handles:
+  - Password hashing
+  - Session management
+  - OAuth providers
+  - Row Level Security (RLS)
+
+**Migration Path:**
+```typescript
+// Phase 1: Simple user selection
+const user = selectUser(name);
+
+// Phase 3+: Authenticated users
+const { data: { user } } = await supabase.auth.signIn({ email, password });
+```
+
+### Data Validation
+
+**Three Layers:**
+
+1. **Client-Side (UX):**
+   ```tsx
+   <input 
+     type="text" 
+     required 
+     minLength={2}
+     maxLength={50}
+   />
+   ```
+   - Immediate feedback
+   - Better user experience
+   - NOT for security (can be bypassed)
+
+2. **Server-Side (Security):**
+   ```typescript
+   // Server Action or API Route
+   if (!name || name.length < 2) {
+     throw new Error('Invalid name');
+   }
+   ```
+   - Cannot be bypassed
+   - Real security layer
+
+3. **Database Constraints (Enforcement): ✅ Already implemented**
+   ```sql
+   CHECK (quantity > 0)
+   CHECK (condition IN ('mint', 'near-mint', ...))
+   ```
+   - Final enforcement
+   - Prevents bad data at source
+
+**Current Approach:**
+- Database constraints ✅ (already have)
+- Client-side validation (add as needed)
+- Server-side validation (add in Phase 2+)
+
+### Content Security Policy (CSP)
+
+**Current: Next.js Defaults ✅**
+- Next.js provides secure defaults
+- No custom CSP needed yet (KISS)
+
+**Future (Production):**
+- Consider adding CSP headers
+- Restrict script sources
+- Add in Phase 4 (deployment hardening)
+
+### Rate Limiting
+
+**Current: Not Needed**
+- Family/personal app
+- Low traffic
+- Pokemon TCG API has its own limits
+
+**Future: Consider if needed**
+- Add if app becomes public
+- Supabase has built-in rate limiting
+- Implement at API route level if needed
+
+### Secure Coding Practices
+
+**Do:**
+- ✅ Use TypeScript (type safety)
+- ✅ Validate user input
+- ✅ Use HTTPS in production (Vercel default)
+- ✅ Keep dependencies updated
+- ✅ Use environment variables for secrets
+
+**Don't:**
+- ❌ Use `dangerouslySetInnerHTML` with user input
+- ❌ Use `eval()` or `new Function()`
+- ❌ Commit secrets to git
+- ❌ Trust client-side validation alone
+- ❌ Expose sensitive data in client code
+
+### Security Checklist
+
+**Phase 1 (Current):**
+- [x] `.env.local` in `.gitignore`
+- [x] No secrets in client code
+- [x] React's XSS protection (default)
+- [x] Supabase SQL injection protection (default)
+- [x] Database constraints for data validation
+
+**Phase 2-3 (Future):**
+- [ ] Add authentication (Supabase Auth)
+- [ ] Server-side input validation
+- [ ] Rate limiting (if needed)
+- [ ] Content Security Policy headers
+
+**Phase 4 (Production Hardening):**
+- [ ] Security audit
+- [ ] Penetration testing (if public)
+- [ ] HTTPS enforcement
+- [ ] Regular dependency updates
+
+---
+
 ## Database Schema
 
 ### Tables
@@ -812,6 +1012,183 @@ Respect `.gitignore` - never commit:
 - Automatic `updated_at` timestamp triggers
 - Row Level Security (RLS) enabled (allow all for Phase 1)
 - Check constraints for data validation
+
+---
+
+## Component Library (shadcn/ui + Lucide Icons)
+
+### shadcn/ui
+
+**What is it?**
+- Collection of re-usable components built with Radix UI and Tailwind CSS
+- Copy-paste components (not an npm package)
+- Full ownership and customization
+- Accessible by default (WCAG AA compliant)
+
+**Installation:**
+```bash
+# Initialize shadcn/ui (first time only)
+npx shadcn@latest init
+
+# Add individual components as needed
+npx shadcn@latest add button
+npx shadcn@latest add card
+npx shadcn@latest add dialog
+npx shadcn@latest add input
+npx shadcn@latest add dropdown-menu
+```
+
+**Where Components Go:**
+- Installed to `src/components/ui/`
+- Each component in its own folder
+- Fully customizable after installation
+
+**Common Components for This Project:**
+```bash
+# Phase 2 - Collection UI
+npx shadcn@latest add button
+npx shadcn@latest add card
+npx shadcn@latest add dialog
+npx shadcn@latest add input
+npx shadcn@latest add badge
+
+# Phase 3 - Enhanced Features
+npx shadcn@latest add dropdown-menu
+npx shadcn@latest add select
+npx shadcn@latest add tabs
+npx shadcn@latest add tooltip
+npx shadcn@latest add skeleton
+```
+
+**Customization Guidelines:**
+- Modify components after installation as needed
+- Keep changes minimal and documented
+- Use CSS Modules with `@apply` for custom styles
+- Maintain accessibility features
+
+**Example Usage:**
+```tsx
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+
+export function CardItem({ card }) {
+  return (
+    <Card>
+      <Card.Header>
+        <h3>{card.name}</h3>
+      </Card.Header>
+      <Card.Body>
+        <img src={card.images.small} alt={card.name} />
+      </Card.Body>
+      <Card.Footer>
+        <Button>Add to Collection</Button>
+      </Card.Footer>
+    </Card>
+  );
+}
+```
+
+### Lucide Icons
+
+**What is it?**
+- Beautiful, consistent icon library
+- Tree-shakeable (only imports icons you use)
+- Customizable size and color
+- Accessible with proper ARIA labels
+
+**Installation:**
+```bash
+npm install lucide-react
+```
+
+**Usage:**
+```tsx
+import { Search, Plus, Trash2, Settings } from 'lucide-react';
+
+// Basic usage
+<Search className="w-5 h-5" />
+
+// With Tailwind classes
+<Plus className="w-6 h-6 text-blue-600" />
+
+// In buttons
+<button>
+  <Trash2 className="w-4 h-4 mr-2" />
+  Delete
+</button>
+
+// Icon-only button (needs aria-label)
+<button aria-label="Settings">
+  <Settings className="w-5 h-5" />
+</button>
+```
+
+**Common Icons for This Project:**
+- `Search` - Search functionality
+- `Plus` - Add card
+- `Trash2` - Delete card
+- `Edit` - Edit details
+- `Filter` - Filter options
+- `SortAsc`, `SortDesc` - Sorting
+- `User` - User profile
+- `Settings` - Settings
+- `X` - Close modals
+- `ChevronDown`, `ChevronUp` - Dropdowns
+- `Loader2` - Loading spinner (with animation)
+
+**Icon Sizing Convention:**
+```tsx
+// Small (16px) - inline with text
+<Icon className="w-4 h-4" />
+
+// Medium (20px) - buttons, UI elements
+<Icon className="w-5 h-5" />
+
+// Large (24px) - prominent actions
+<Icon className="w-6 h-6" />
+
+// Extra large (32px+) - empty states, headers
+<Icon className="w-8 h-8" />
+```
+
+**Accessibility:**
+```tsx
+// Decorative icon (has visible text)
+<button>
+  <Plus className="w-4 h-4" aria-hidden="true" />
+  Add Card
+</button>
+
+// Functional icon (no visible text)
+<button aria-label="Close">
+  <X className="w-5 h-5" />
+</button>
+
+// Loading spinner
+<Loader2 className="w-5 h-5 animate-spin" aria-label="Loading" />
+```
+
+### Component Library Best Practices
+
+**Install as Needed:**
+- Don't install all components upfront (KISS)
+- Add components when you need them
+- Only install variants when required
+
+**Customization:**
+- Modify after installation
+- Document significant changes
+- Keep accessibility features intact
+
+**Consistency:**
+- Use same components across app
+- Follow established patterns
+- Maintain visual consistency
+
+**Performance:**
+- Lucide icons are tree-shaken (only bundle what you use)
+- shadcn components are optimized by default
+- No performance concerns with either library
 
 ---
 
