@@ -1391,6 +1391,188 @@ import Image from 'next/image';
 
 ---
 
+## Deployment
+
+**Platform: Vercel (Recommended)**
+- Free tier for hobby projects
+- Automatic deployments from git
+- Built-in Next.js optimization
+- Zero configuration needed
+
+### Initial Setup
+
+**1. Connect Repository:**
+```bash
+# Push to GitHub (if not already)
+git remote add origin <your-repo-url>
+git push -u origin main
+
+# Go to vercel.com
+# Click "New Project"
+# Import your GitHub repository
+```
+
+**2. Configure Project:**
+- Framework Preset: **Next.js** (auto-detected)
+- Build Command: `npm run build` (default)
+- Output Directory: `.next` (default)
+- Install Command: `npm install` (default)
+
+**3. Environment Variables:**
+Add in Vercel dashboard (Settings → Environment Variables):
+```bash
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+NEXT_PUBLIC_POKEMON_TCG_API_KEY=<your-api-key>
+```
+
+**4. Deploy:**
+- Click "Deploy"
+- Wait for build to complete
+- Get your URL: `your-app.vercel.app`
+
+### Automatic Deployments
+
+**Production (main branch):**
+- Every push to `main` triggers deployment
+- Automatic builds and deploys
+- Live at: `your-app.vercel.app`
+
+**Preview Deployments (future):**
+- When using feature branches
+- Each branch gets preview URL
+- Test before merging to main
+
+### Custom Domain (Optional)
+
+**Add Custom Domain:**
+1. Go to Vercel dashboard → Domains
+2. Add your domain
+3. Update DNS records (Vercel provides instructions)
+4. Automatic HTTPS certificate
+
+**Not needed for Phase 1-2** (KISS)
+
+### Build Optimization
+
+**Vercel Handles:**
+- ✅ Image optimization (Next.js Image component)
+- ✅ Code splitting and bundling
+- ✅ Edge caching
+- ✅ Compression (gzip/brotli)
+- ✅ HTTPS by default
+
+**No additional configuration needed**
+
+### Environment-Specific Settings
+
+**Development:**
+```bash
+# .env.local (local only, gitignored)
+NEXT_PUBLIC_SUPABASE_URL=...
+```
+
+**Production:**
+```bash
+# Vercel dashboard → Environment Variables
+# Same variables as .env.local
+```
+
+**Staging (future):**
+```bash
+# Create separate Vercel project for staging
+# Use different Supabase project/database
+```
+
+### Deployment Checklist
+
+**Before First Deploy:**
+- [ ] Push code to GitHub
+- [ ] Create Vercel account
+- [ ] Add environment variables in Vercel
+- [ ] Verify Supabase project is accessible
+- [ ] Test build locally (`npm run build`)
+
+**Before Each Deploy:**
+- [ ] Code committed to git
+- [ ] Tests passing (when added)
+- [ ] No console errors
+- [ ] TypeScript compiles (`npm run build`)
+- [ ] Environment variables up to date
+
+**After Deploy:**
+- [ ] Test production URL
+- [ ] Verify database connection works
+- [ ] Check Pokemon TCG API integration
+- [ ] Test on mobile device
+- [ ] Verify offline mode works
+
+### Monitoring & Logs
+
+**Vercel Dashboard:**
+- Build logs (if deployment fails)
+- Runtime logs (server errors)
+- Analytics (page views, performance)
+
+**Access Logs:**
+1. Go to Vercel dashboard
+2. Select your project
+3. Click "Deployments"
+4. Click on specific deployment
+5. View "Build Logs" or "Function Logs"
+
+### Troubleshooting
+
+**Build Fails:**
+- Check build logs in Vercel dashboard
+- Verify all dependencies in `package.json`
+- Test build locally: `npm run build`
+- Check environment variables are set
+
+**Runtime Errors:**
+- Check Function Logs in Vercel
+- Verify environment variables
+- Test Supabase connection
+- Check API rate limits
+
+**Slow Performance:**
+- Use Next.js Image component (automatic optimization)
+- Implement caching (already using localStorage)
+- Consider CDN for static assets (Vercel handles this)
+
+### Rollback
+
+**If deployment breaks:**
+1. Go to Vercel dashboard → Deployments
+2. Find last working deployment
+3. Click "..." menu → "Promote to Production"
+4. Instant rollback to previous version
+
+### Cost Considerations
+
+**Vercel Free Tier (Hobby):**
+- ✅ Unlimited deployments
+- ✅ 100GB bandwidth/month
+- ✅ Automatic HTTPS
+- ✅ Preview deployments
+- ✅ More than enough for personal/family app
+
+**If You Exceed Free Tier:**
+- Upgrade to Pro ($20/month)
+- Or optimize (unlikely for this app)
+
+### Alternative Platforms (Future)
+
+**If Vercel doesn't work:**
+- **Netlify** - Similar to Vercel
+- **Railway** - Good for full-stack apps
+- **Fly.io** - More control, slightly more complex
+- **Self-hosted** - VPS, Docker, etc.
+
+**Stick with Vercel for now** (KISS)
+
+---
+
 ## Project Documentation
 
 - **`spec.md`**: Comprehensive project requirements and roadmap
