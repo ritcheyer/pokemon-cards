@@ -1573,6 +1573,171 @@ NEXT_PUBLIC_SUPABASE_URL=...
 
 ---
 
+## Analytics & Monitoring
+
+**Current: Not Implemented (Phase 1-2)**
+- No analytics yet (KISS)
+- Console logging for debugging
+- Add when needed in Phase 3+
+
+**Future: Vercel Analytics (Phase 3+)**
+- Built-in with Vercel hosting
+- Privacy-friendly (no cookies, GDPR compliant)
+- Zero configuration (enable in dashboard)
+- Automatic tracking: page views, performance, traffic
+
+**Implementation (when needed):**
+```bash
+npm install @vercel/analytics
+```
+
+```tsx
+// app/layout.tsx
+import { Analytics } from '@vercel/analytics/react';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  );
+}
+```
+
+**See `spec.md` for detailed analytics strategy**
+
+---
+
+## Internationalization (i18n)
+
+**Current: English Only**
+- Hobby/family project
+- No i18n needed (KISS)
+- All text in English
+
+**Future: If Needed (Phase 4+)**
+- Consider `next-intl` or similar
+- Only add if user base expands
+- Not a priority for personal use
+
+**Current Approach:**
+- Hard-coded English strings
+- No translation keys
+- Simple and maintainable
+
+---
+
+## Debugging Guidelines
+
+**Browser DevTools:**
+- **Console**: Check for errors, warnings, logs
+- **Network Tab**: Inspect API calls (Pokemon TCG, Supabase)
+- **Application Tab**: Inspect localStorage cache
+- **React DevTools**: Component hierarchy, props, state
+
+**Common Debugging Scenarios:**
+
+**1. Search Returns No Results:**
+```typescript
+// Check console for API URL
+console.log('Searching Pokemon TCG API:', url);
+console.log(`Found ${result.data.length} cards for query: ${query}`);
+
+// Verify search query format
+// Should be: name:*query*
+```
+
+**2. Offline Sync Not Working:**
+```typescript
+// Check localStorage
+localStorage.getItem('pokemon-collection-pending-changes');
+
+// Check sync status
+import { getSyncStatus } from '@/lib/db/sync';
+console.log('Sync status:', getSyncStatus());
+```
+
+**3. Supabase Connection Issues:**
+```typescript
+// Test connection
+import { testSupabaseConnection } from '@/lib/db/supabase';
+const isConnected = await testSupabaseConnection();
+console.log('Supabase connected:', isConnected);
+```
+
+**4. TypeScript Errors:**
+```bash
+# Check types
+npm run build
+
+# Or use TypeScript directly
+npx tsc --noEmit
+```
+
+**Debugging Tools:**
+- **React DevTools**: Install browser extension
+- **Network Throttling**: Test slow connections
+- **Lighthouse**: Performance and accessibility audits
+- **Console Logs**: Already implemented throughout codebase
+
+**Best Practices:**
+- Add descriptive console.logs during development
+- Remove or comment out before committing
+- Use `console.error()` for errors
+- Use `console.warn()` for warnings
+- Use `console.log()` for debugging info
+
+---
+
+## Future Considerations
+
+**Authentication (Phase 3+):**
+- Supabase Auth for user accounts
+- Email/password or OAuth (Google, GitHub)
+- Row Level Security (RLS) policies
+- Migration path documented in Security section
+
+**Multi-Device Sync:**
+- Already implemented via Supabase
+- Conflict resolution: last-write-wins (current)
+- Consider more sophisticated conflict resolution if needed
+
+**Data Export/Backup:**
+- Export collection to JSON
+- Import from JSON
+- CSV export for spreadsheet analysis
+- Add in Phase 3-4 if needed
+
+**Advanced Features (Phase 5+):**
+- Price tracking and alerts
+- Card scanning (camera + OCR)
+- Trading/wishlist features
+- Social features (share collections)
+- See `spec.md` for full roadmap
+
+**Performance Optimization:**
+- Virtual scrolling for large collections (1000+ cards)
+- Image lazy loading (already using Next.js Image)
+- Service Worker for better offline support
+- IndexedDB instead of localStorage (if needed)
+
+**Testing (Future):**
+- Unit tests (Jest + React Testing Library)
+- E2E tests (Playwright)
+- Add when codebase stabilizes
+- Not needed for Phase 1-2 (KISS)
+
+**Accessibility Audit (Phase 4):**
+- Screen reader testing
+- Keyboard navigation verification
+- Color contrast audit
+- WCAG AAA compliance (currently targeting AA)
+
+---
+
 ## Project Documentation
 
 - **`spec.md`**: Comprehensive project requirements and roadmap
