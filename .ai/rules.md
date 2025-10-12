@@ -223,11 +223,455 @@ Features:
 - Extract reusable logic into custom hooks
 - Keep components focused (single responsibility)
 
+### Component Organization
+
+#### Directory Structure
+```
+src/
+├── components/
+│   ├── ui/              # Reusable UI elements (Design System)
+│   │   ├── Button/
+│   │   │   ├── Button.tsx
+│   │   │   └── Button.module.css (if needed)
+│   │   ├── Input/
+│   │   ├── Card/
+│   │   └── ...
+│   └── features/        # Feature-specific component groupings
+│       ├── CardGrid/
+│       │   ├── CardGrid.tsx
+│       │   ├── CardItem.tsx
+│       │   └── CardGrid.module.css (if needed)
+│       ├── UserProfile/
+│       └── ...
+├── app/
+│   └── [page]/
+│       ├── page.tsx
+│       └── page.module.css (page-specific styles, if needed)
+└── styles/
+    └── globals.css      # Global styles
+```
+
+#### Component File Structure
+- **Folder per component**: Each component gets its own folder
+- **Co-located styles**: Component-specific styles live with the component
+- **Page-specific styles**: Can live next to page file or in `globals.css`
+
+**Example:**
+```
+src/components/ui/Button/
+├── Button.tsx           # Component logic
+└── Button.module.css    # Component styles (optional)
+```
+
+#### Component Categories
+
+**UI Components** (`src/components/ui/`)
+- Reusable, generic elements
+- Design system building blocks
+- Examples: Button, Input, Card, Modal, Dropdown
+- Use **shadcn/ui** for base components
+- Only create variants **as needed** (no premature optimization)
+- Example: Don't create `iconOnly` button variant until it's actually used
+
+**Feature Components** (`src/components/features/`)
+- Groupings of UI components for specific features
+- Consistent layouts and patterns
+- Examples: CardGrid, UserProfile, SearchBar, CollectionStats
+- Can contain multiple sub-components
+- May have feature-specific state/logic
+
+#### shadcn/ui Integration
+- Install components to `src/components/ui/`
+- Customize after installation as needed
+- Keep modifications minimal and documented
+- Install command: `npx shadcn-ui@latest add [component]`
+
+#### When to Extract a Component
+**Extract when:**
+- Used in **2+ places** (DRY principle)
+- Logical separation makes code clearer
+- Component becomes too complex (>150 lines)
+
+**Don't extract when:**
+- Only used once and simple
+- Premature abstraction
+- Over-engineering for "future use"
+
+#### Component Composition Patterns
+**Prefer simplicity and high reuse:**
+- **Simple props** for most cases
+- **Compound components** when logical grouping makes sense
+  ```tsx
+  <Card>
+    <Card.Header>Title</Card.Header>
+    <Card.Body>Content</Card.Body>
+  </Card>
+  ```
+- **Render props** only when necessary for flexibility
+- **Children prop** for wrapper components
+
+**Example - Simple Props:**
+```tsx
+<Button variant="primary" size="lg" onClick={handleClick}>
+  Click Me
+</Button>
+```
+
+**Example - Compound Components:**
+```tsx
+<Modal>
+  <Modal.Header>Title</Modal.Header>
+  <Modal.Body>Content</Modal.Body>
+  <Modal.Footer>
+    <Button>Close</Button>
+  </Modal.Footer>
+</Modal>
+```
+
+### State Management
+
+**Philosophy: KISS (Keep It Simple, Stupid)**
+- Start simple, add complexity only when necessary
+- Avoid premature optimization
+- Use the simplest solution that works
+
+#### Current Approach (Phase 1-2)
+**React Hooks Only:**
+- `useState` for local component state
+- `useEffect` for side effects
+- Custom hooks for reusable logic
+- Props for parent-child communication
+
+**Server State:**
+- Handled by sync layer (`src/lib/db/sync.ts`)
+- Supabase data + Pokemon TCG API
+- Cached in localStorage
+- No additional state library needed
+
+**Client State:**
+- UI state (modals, forms, filters, loading states)
+- Keep in component state
+- Lift to nearest common parent when shared
+
+#### State Lifting Guidelines
+- **Lift state up** to nearest common parent when multiple components need it
+- **Don't lift** if only one component needs it
+- **Max 2-3 levels** of props drilling before considering alternatives
+
+#### When to Consider a State Library
+**Triggers to evaluate:**
+- Props drilling becomes painful (>3 levels deep)
+- Multiple unrelated components need same state
+- State updates become hard to track
+- Performance issues with re-renders
+
+**Options to consider (when needed):**
+- **Context API** - Built-in, good for theme, user, simple global state
+- **Zustand** - Minimal, simple API, good for medium complexity
+- **Jotai** - Atomic state, good for granular updates
+- **Redux** - Overkill for this project (avoid unless absolutely necessary)
+
+**Current decision: Not needed yet. Revisit in Phase 3+**
+
 ### Error Handling
 - Always use try/catch for async operations
 - Show user-friendly error messages (no technical jargon)
 - Log errors to console for debugging
 - Never let the app crash - graceful degradation
+
+### Error Boundaries & Progressive Enhancement
+
+**Philosophy: Hybrid Approach**
+- Server-render initial page (works without JS)
+- JavaScript enhances functionality but isn't strictly required
+- Graceful degradation when errors occur
+- Focus on offline mode (which requires JS anyway)
+
+#### Error Boundaries (Phase 2-3)
+
+**When to Add:**
+- Not critical for Phase 1 (KISS)
+- Add in Phase 2-3 as app complexity grows
+- Prevents full app crashes
+
+**Where to Place:**
+```tsx
+// app/layout.tsx - Root level (Phase 2-3)
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <ErrorBoundary fallback={<ErrorFallback />}>
+          {children}
+        </ErrorBoundary>
+      </body>
+    </html>
+  );
+}
+```
+
+**Simple Error Boundary Component:**
+```tsx
+// components/ErrorBoundary.tsx
+'use client';
+
+import { Component, ReactNode } from 'react';
+
+interface Props {
+  children: ReactNode;
+  fallback: ReactNode;
+}
+
+interface State {
+  hasError: boolean;
+  error?: Error;
+}
+
+export class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
+```
+
+**Fallback UI:**
+```tsx
+// components/ErrorFallback.tsx
+export function ErrorFallback() {
+  return (
+    <div className="errorFallback">
+      <h1>Something went wrong</h1>
+      <p>We're sorry for the inconvenience.</p>
+      <button onClick={() => window.location.reload()}>
+        Reload Page
+      </button>
+    </div>
+  );
+}
+```
+
+#### Progressive Enhancement Strategy
+
+**Core Features (Work Without JS):**
+- View collection (server-rendered)
+- Navigate between users (standard `<a>` links)
+- Basic page navigation
+
+**Enhanced Features (Require JS):**
+- Offline mode (localStorage)
+- Optimistic updates
+- Search autocomplete
+- Modals and interactive UI
+- Real-time sync
+
+**Implementation Pattern:**
+```tsx
+// Server Component (works without JS)
+export default async function CollectionPage({ params }) {
+  const cards = await getCollection(params.userId);
+  
+  return (
+    <>
+      {/* Server-rendered, works without JS */}
+      <CardList cards={cards} />
+      
+      {/* Client component, enhanced with JS */}
+      <ClientSearchBar />
+    </>
+  );
+}
+```
+
+**No-JavaScript Fallback:**
+```tsx
+// app/layout.tsx
+<noscript>
+  <div style={{ padding: '20px', background: '#fff3cd', border: '1px solid #ffc107' }}>
+    <strong>JavaScript is disabled.</strong>
+    <p>This app works best with JavaScript enabled. You can still view your collection, but offline mode and interactive features won't work.</p>
+  </div>
+</noscript>
+```
+
+#### Error Logging Strategy
+
+**Current (Phase 1-2): Console Only**
+- `console.error()` for debugging
+- Browser DevTools for inspection
+- Simple and sufficient for development
+
+**Future (Phase 3+): Consider External Service**
+- Sentry, LogRocket, or similar
+- Track errors in production
+- User session replay
+- Only add when needed (KISS)
+
+#### Recovery Patterns
+
+**Automatic Retry (for network errors):**
+```tsx
+async function fetchWithRetry(fn: () => Promise<any>, retries = 3) {
+  try {
+    return await fn();
+  } catch (error) {
+    if (retries > 0) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return fetchWithRetry(fn, retries - 1);
+    }
+    throw error;
+  }
+}
+```
+
+**Manual Retry (for user-triggered actions):**
+```tsx
+function ErrorState({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div>
+      <p>Failed to load. Please try again.</p>
+      <button onClick={onRetry}>Retry</button>
+    </div>
+  );
+}
+```
+
+**Graceful Degradation:**
+```tsx
+// If feature fails, show cached data or simplified version
+try {
+  const liveData = await fetchLiveData();
+  return <FullFeature data={liveData} />;
+} catch (error) {
+  const cachedData = getCachedData();
+  return <SimplifiedFeature data={cachedData} />;
+}
+```
+
+### Styling Guidelines
+
+**Philosophy: KISS + Semantic Classes**
+- Use Tailwind CSS but extract to meaningful class names
+- Avoid inline Tailwind classes in JSX
+- No custom CSS unless framework limitation
+- Mobile-first responsive design
+
+#### CSS Modules with Tailwind's `@apply`
+**Preferred approach:**
+```tsx
+// Component: CardGrid.tsx
+import styles from './CardGrid.module.css';
+
+export function CardGrid() {
+  return <div className={styles.cardGrid}>...</div>;
+}
+```
+
+```css
+/* CardGrid.module.css */
+.cardGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6;
+}
+
+.cardItem {
+  @apply rounded-lg border border-gray-200 p-4 hover:shadow-lg transition-shadow;
+}
+```
+
+**Benefits:**
+- Semantic, meaningful class names
+- Easier to read and maintain
+- Tailwind utilities still available
+- Scoped to component (no conflicts)
+
+#### When NOT to Use Custom CSS
+- **Avoid custom CSS files** unless Tailwind can't handle it
+- If Tailwind can't do it, consider if feature is necessary (KISS)
+- Animations: Use Tailwind's built-in animations first
+- Complex states: Try Tailwind variants (`hover:`, `focus:`, `active:`)
+
+#### Responsive Design Strategy
+
+**Mobile-First Approach:**
+- Default classes = mobile (320px+)
+- `md:` prefix = tablet (768px+)
+- `lg:` prefix = desktop (1024px+)
+
+**Three Breakpoints:**
+```css
+/* Mobile (default) - 320px+ */
+.container {
+  @apply p-4 text-sm;
+}
+
+/* Tablet - 768px+ */
+.container {
+  @apply md:p-6 md:text-base;
+}
+
+/* Desktop - 1024px+ */
+.container {
+  @apply lg:p-8 lg:text-lg;
+}
+```
+
+**Testing Breakpoints:**
+- **Mobile**: 320px (small phone), 375px (iPhone), 414px (large phone)
+- **Tablet**: 768px (iPad portrait), 1024px (iPad landscape)
+- **Desktop**: 1280px (Chromebook), 1440px+ (desktop)
+
+#### Dark Mode (Phase 4)
+
+**Current Approach:**
+- Use Tailwind's `dark:` classes
+```css
+.card {
+  @apply bg-white dark:bg-gray-800;
+  @apply text-gray-900 dark:text-gray-100;
+}
+```
+
+**Future Migration:**
+- Transition to CSS Custom Properties (CSS variables)
+- Allows more flexible theming
+- Document migration path when needed
+
+#### Color System
+
+**Current: Tailwind Default Colors**
+- Use Tailwind's built-in color palette
+- No custom colors yet (KISS)
+- Examples: `bg-blue-600`, `text-gray-900`, `border-gray-200`
+
+**Future Considerations:**
+- May extend with brand colors if needed
+- May add CSS variables for theming
+- Revisit in Phase 3-4
+
+#### Class Naming Conventions (CSS Modules)
+- **camelCase** for class names: `.cardGrid`, `.userProfile`, `.searchBar`
+- **Descriptive names**: What it is, not how it looks
+  - ✅ `.primaryButton`, `.cardGrid`, `.userAvatar`
+  - ❌ `.blueButton`, `.fourColumns`, `.roundImage`
+- **BEM-style** for variants (optional):
+  - `.button`, `.button--primary`, `.button--disabled`
 
 ### Naming Conventions
 - **Files**: kebab-case (`pokemon-tcg.ts`, `user-profile.tsx`)
@@ -235,6 +679,106 @@ Features:
 - **Functions**: camelCase (`searchCards`, `handleSubmit`)
 - **Constants**: UPPER_SNAKE_CASE (`API_BASE_URL`, `CACHE_DURATION`)
 - **Types/Interfaces**: PascalCase (`User`, `PokemonCard`)
+- **CSS Classes**: camelCase (`.cardGrid`, `.primaryButton`)
+
+---
+
+## Git & Version Control
+
+### Commit Message Format
+Use **Conventional Commits** format:
+
+```
+<type>: <short description>
+
+<detailed summary of changes from agentic chat log>
+
+<optional footer with breaking changes, issues closed, etc.>
+```
+
+**Types:**
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `style:` - Code style changes (formatting, no logic change)
+- `refactor:` - Code refactoring (no feature change)
+- `perf:` - Performance improvements
+- `test:` - Adding or updating tests
+- `chore:` - Maintenance tasks (deps, config, etc.)
+
+**Examples:**
+```
+feat: add user selection interface
+
+Created user selection screen with:
+- User list display with avatar circles
+- Create new user modal with form validation
+- Auto-select newly created user
+- Loading and error states
+- Switch user functionality
+
+Phase 1 user management complete.
+```
+
+```
+fix: update Pokemon TCG API search to use wildcard matching
+
+Changed search query from name:"query*" to name:*query* to enable
+partial matching on both sides. This fixes the issue where searches
+for "charizard" were returning zero results.
+
+Added console logging for debugging search requests.
+```
+
+### Commit Frequency
+- **User decides when to commit** based on milestones
+- **Milestone definition**: 
+  - Completion of a Phase (from `spec.md`)
+  - Significant feature completion
+  - Bug fix that resolves an issue
+  - Documentation updates
+  - User's discretion
+- Commits should represent **complete, working state** (no broken code)
+
+### Branch Strategy
+
+#### Current (Early Development)
+- **Direct commits to `main`**
+- Simple, fast iteration during initial setup
+- Suitable for solo development
+
+#### Future (Feature-Complete State)
+- **Feature branches**: `feature/short-description`
+  - Example: `feature/card-grid`, `feature/dark-mode`
+- **Bug fix branches**: `bugfix/short-description`
+  - Example: `bugfix/search-timeout`, `bugfix/offline-sync`
+- **Merge to `main`** when feature/fix is complete and tested
+- Delete branch after merge
+
+### What NOT to Commit
+Respect `.gitignore` - never commit:
+- `node_modules/` - Dependencies
+- `.next/` - Build output
+- `.env.local` - Environment variables (secrets)
+- `*.log` - Log files
+- `.DS_Store` - macOS system files
+- Build artifacts and temporary files
+
+**Always check** `git status` before committing to ensure no ignored files are staged.
+
+### Pull Request Process
+
+#### Current (Solo Project)
+- **No PR process** - direct commits to `main`
+- Self-review code before committing
+- Run `npm run lint` before committing
+- Ensure TypeScript compiles (`npm run build`)
+
+#### Future (Team/Mature Project)
+- Create PR from feature branch to `main`
+- Self-review or peer review
+- CI/CD checks must pass
+- Squash and merge to keep history clean
 
 ---
 
