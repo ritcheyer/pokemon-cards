@@ -1,0 +1,12 @@
+# Aider Configuration
+# For Aider rules and conventions, see .ai/rules.md
+
+# Standard ignores
+node_modules/
+.next/
+.git/
+dist/
+build/
+*.log
+.env.local
+.DS_Store
