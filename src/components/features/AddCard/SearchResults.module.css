@@ -1,0 +1,63 @@
+@reference "../../../app/globals.css";
+
+/* Container */
+.container {
+  @apply px-6 pb-6 flex-1 overflow-y-auto;
+}
+
+/* Result Count */
+.resultCount {
+  @apply text-sm text-gray-600 dark:text-gray-400 mb-4;
+}
+
+/* Grid */
+.grid {
+  @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4;
+}
+
+/* Result Card */
+.resultCard {
+  @apply bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden hover:ring-2 hover:ring-blue-500 transition-all text-left;
+}
+
+.imageContainer {
+  @apply relative w-full aspect-[245/342] bg-gray-100 dark:bg-gray-600;
+}
+
+.image {
+  @apply w-full h-full object-cover;
+}
+
+.info {
+  @apply p-3 space-y-1;
+}
+
+.name {
+  @apply text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-2;
+}
+
+.set {
+  @apply text-xs text-gray-600 dark:text-gray-400 truncate;
+}
+
+.rarity {
+  @apply text-xs text-blue-600 dark:text-blue-400 font-medium;
+}
+
+/* Loading State */
+.loadingState {
+  @apply flex flex-col items-center justify-center py-12 gap-4;
+}
+
+.spinner {
+  @apply w-12 h-12 border-4 border-gray-200 dark:border-gray-600 border-t-blue-600 rounded-full animate-spin;
+}
+
+.loadingState p {
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+/* Empty State */
+.emptyState {
+  @apply flex items-center justify-center py-12 text-gray-500 dark:text-gray-400;
+}

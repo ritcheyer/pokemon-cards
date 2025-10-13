@@ -1,0 +1,130 @@
+@reference "../../../app/globals.css";
+
+/* Overlay */
+.overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50;
+}
+
+/* Modal */
+.modal {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden;
+}
+
+/* Header */
+.header {
+  @apply flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0;
+}
+
+.header h2 {
+  @apply text-2xl font-bold text-gray-900 dark:text-gray-100;
+}
+
+.closeButton {
+  @apply text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-4xl leading-none transition-colors;
+}
+
+/* Scrollable Content */
+.content {
+  @apply flex-1 overflow-y-auto p-6;
+}
+
+/* Error */
+.error {
+  @apply mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400;
+}
+
+/* Card Display */
+.cardDisplay {
+  @apply flex flex-col md:flex-row gap-6;
+}
+
+.imageSection {
+  @apply flex-shrink-0;
+}
+
+.cardImage {
+  @apply rounded-lg shadow-lg;
+}
+
+.infoSection {
+  @apply flex-1 space-y-6;
+}
+
+.infoGroup h3 {
+  @apply text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3;
+}
+
+.detailsList {
+  @apply grid grid-cols-[auto_1fr] gap-x-4 gap-y-2;
+}
+
+.detailsList dt {
+  @apply font-medium text-gray-600 dark:text-gray-400;
+}
+
+.detailsList dd {
+  @apply text-gray-900 dark:text-gray-100;
+}
+
+/* Edit Form */
+.editForm {
+  @apply space-y-4;
+}
+
+.field {
+  @apply flex flex-col gap-2;
+}
+
+.field label {
+  @apply text-sm font-medium text-gray-700 dark:text-gray-300;
+}
+
+.input,
+.select,
+.textarea {
+  @apply px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors;
+}
+
+.select {
+  @apply appearance-none cursor-pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.25rem;
+  padding-right: 2.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+}
+
+.select:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.textarea {
+  @apply resize-none;
+}
+
+/* Sticky Footer */
+.footer {
+  @apply flex gap-3 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex-shrink-0;
+}
+
+.deleteButton {
+  @apply px-6 py-3 border border-red-300 dark:border-red-700 rounded-lg text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold;
+}
+
+.editButton {
+  @apply flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold;
+}
+
+.cancelButton {
+  @apply flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-semibold;
+}
+
+.saveButton {
+  @apply flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold;
+}

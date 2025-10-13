@@ -1,0 +1,60 @@
+@reference "../../../app/globals.css";
+
+/* Overlay */
+.overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50;
+}
+
+/* Modal */
+.modal {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden;
+}
+
+/* Header */
+.header {
+  @apply flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0;
+}
+
+.header h2 {
+  @apply text-2xl font-bold text-gray-900 dark:text-gray-100;
+}
+
+.closeButton {
+  @apply text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-4xl leading-none transition-colors;
+}
+
+/* Content Area - Scrollable */
+.content {
+  @apply flex-1 overflow-y-auto flex flex-col;
+}
+
+/* Error */
+.error {
+  @apply mx-6 mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400;
+}
+
+/* Search Form */
+.searchForm {
+  @apply p-6 flex gap-3 flex-shrink-0;
+}
+
+.searchInput {
+  @apply flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
+.searchButton {
+  @apply px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold;
+}
+
+/* Sticky Footer */
+.footer {
+  @apply flex gap-3 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex-shrink-0;
+}
+
+.backButton {
+  @apply flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-semibold;
+}
+
+.addButton {
+  @apply flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold;
+}

@@ -17,6 +17,8 @@ export interface PokemonCard {
   hp?: string;
   types?: string[]; // Fire, Water, Grass, etc.
   rarity?: string; // Common, Uncommon, Rare, etc.
+  number?: string; // Card number in set
+  artist?: string; // Card artist
   set: {
     id: string;
     name: string;

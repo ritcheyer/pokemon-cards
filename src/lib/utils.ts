@@ -83,6 +83,7 @@ export function formatCondition(condition: string): string {
 /**
  * Debounce a function
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number

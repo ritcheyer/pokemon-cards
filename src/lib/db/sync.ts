@@ -1,11 +1,8 @@
 // Sync layer for localStorage <-> Supabase
 import { supabase } from './supabase';
 import type { User, CollectionCard, UserRow, CollectionCardRow } from '../types';
-import {
-  userRowToUser,
-  collectionCardRowToCollectionCard,
-  collectionCardToRow,
-} from '../types';
+import { userRowToUser, collectionCardRowToCollectionCard, collectionCardToRow } from '../types';
+import type { Database } from './database.types';
 import {
   getCachedUsers,
   setCachedUsers,
@@ -14,7 +11,6 @@ import {
   getPendingChanges,
   clearPendingChanges,
   addPendingChange,
-  getLastSyncTime,
   setLastSyncTime,
 } from '../storage/localStorage';
 import { isOnline } from '../utils';
@@ -84,9 +80,13 @@ export async function createUser(name: string, avatar?: string): Promise<User> {
   }
 
   try {
-    const { data, error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any)
       .from('users')
-      .insert({ name, avatar: avatar || null })
+      .insert({
+        name,
+        avatar: avatar || null,
+      })
       .select()
       .single();
 

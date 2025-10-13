@@ -1,0 +1,67 @@
+@reference "../../../app/globals.css";
+
+/* Container */
+.container {
+  @apply w-full max-w-7xl mx-auto px-4 py-6;
+}
+
+/* Header */
+.header {
+  @apply flex items-center justify-between mb-6;
+}
+
+.header > div h2 {
+  @apply text-2xl font-bold text-gray-900 dark:text-gray-100;
+}
+
+.count {
+  @apply text-sm text-gray-600 dark:text-gray-400;
+}
+
+/* Grid */
+.grid {
+  @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4;
+}
+
+/* Loading State */
+.loadingState {
+  @apply flex flex-col items-center justify-center min-h-[400px] gap-4;
+}
+
+.spinner {
+  @apply w-12 h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin;
+}
+
+.loadingState p {
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+/* Error State */
+.errorState {
+  @apply flex flex-col items-center justify-center min-h-[400px] gap-4 text-center;
+}
+
+.errorState p {
+  @apply text-red-600 dark:text-red-400 text-lg;
+}
+
+.errorState button {
+  @apply px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors;
+}
+
+/* Empty State */
+.emptyState {
+  @apply flex flex-col items-center justify-center min-h-[400px] gap-4 text-center;
+}
+
+.emptyState h2 {
+  @apply text-3xl font-bold text-gray-900 dark:text-gray-100;
+}
+
+.emptyState p {
+  @apply text-gray-600 dark:text-gray-400 text-lg;
+}
+
+.addButton {
+  @apply px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold;
+}

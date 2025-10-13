@@ -56,9 +56,12 @@ export async function searchCards(query: string): Promise<PokemonCard[]> {
     
     const response = await fetch(url, {
       headers: getHeaders(),
+      mode: 'cors',
     });
     
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('API Error Response:', errorText);
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
     
@@ -74,6 +77,7 @@ export async function searchCards(query: string): Promise<PokemonCard[]> {
     
     return result.data;
   } catch (error) {
+    console.error('Search error details:', error);
     handleApiError(error);
   }
 }
@@ -207,6 +211,7 @@ export async function getRarities(): Promise<string[]> {
 /**
  * Get all sets
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getSets(): Promise<any[]> {
   try {
     const url = `${API_BASE_URL}/sets`;
@@ -219,6 +224,7 @@ export async function getSets(): Promise<any[]> {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result: ApiResponse<any[]> = await response.json();
     return result.data;
   } catch (error) {
