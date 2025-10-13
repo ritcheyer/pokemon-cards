@@ -20,7 +20,7 @@
 }
 
 .closeButton {
-  @apply text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-4xl leading-none transition-colors;
+  @apply text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-4xl leading-none transition-colors cursor-pointer;
 }
 
 /* Content Area - Scrollable */
@@ -43,7 +43,7 @@
 }
 
 .searchButton {
-  @apply px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold;
+  @apply px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold cursor-pointer;
 }
 
 /* Sticky Footer */
@@ -52,9 +52,9 @@
 }
 
 .backButton {
-  @apply flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-semibold;
+  @apply flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-semibold cursor-pointer;
 }
 
 .addButton {
-  @apply flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold;
+  @apply flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold cursor-pointer;
 }
