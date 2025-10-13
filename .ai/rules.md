@@ -293,7 +293,6 @@ src/components/ui/Button/
 - Customize after installation as needed
 - Keep modifications minimal and documented
 - Install command: `npx shadcn@latest add [component]`
-- See full component library section below for details
 
 #### When to Extract a Component
 **Extract when:**
@@ -382,13 +381,13 @@ src/components/ui/Button/
 
 **Current decision: Not needed yet. Revisit in Phase 3+**
 
-### Error Handling
+### Error Handling & Progressive Enhancement
+
+**Core Error Handling Principles:**
 - Always use try/catch for async operations
 - Show user-friendly error messages (no technical jargon)
 - Log errors to console for debugging
 - Never let the app crash - graceful degradation
-
-### Error Boundaries & Progressive Enhancement
 
 **Philosophy: Hybrid Approach**
 - Server-render initial page (works without JS)
@@ -1103,23 +1102,16 @@ npm install lucide-react
 
 **Usage:**
 ```tsx
-import { Search, Plus, Trash2, Settings } from 'lucide-react';
+import { Search, Plus, Trash2 } from 'lucide-react';
 
 // Basic usage
 <Search className="w-5 h-5" />
-
-// With Tailwind classes
 <Plus className="w-6 h-6 text-blue-600" />
 
-// In buttons
+// In buttons (see Accessibility section for aria-label patterns)
 <button>
   <Trash2 className="w-4 h-4 mr-2" />
   Delete
-</button>
-
-// Icon-only button (needs aria-label)
-<button aria-label="Settings">
-  <Settings className="w-5 h-5" />
 </button>
 ```
 
@@ -1137,36 +1129,12 @@ import { Search, Plus, Trash2, Settings } from 'lucide-react';
 - `Loader2` - Loading spinner (with animation)
 
 **Icon Sizing Convention:**
-```tsx
-// Small (16px) - inline with text
-<Icon className="w-4 h-4" />
+- Small (16px): `w-4 h-4` - inline with text
+- Medium (20px): `w-5 h-5` - buttons, UI elements
+- Large (24px): `w-6 h-6` - prominent actions
+- Extra large (32px+): `w-8 h-8` - empty states, headers
 
-// Medium (20px) - buttons, UI elements
-<Icon className="w-5 h-5" />
-
-// Large (24px) - prominent actions
-<Icon className="w-6 h-6" />
-
-// Extra large (32px+) - empty states, headers
-<Icon className="w-8 h-8" />
-```
-
-**Accessibility:**
-```tsx
-// Decorative icon (has visible text)
-<button>
-  <Plus className="w-4 h-4" aria-hidden="true" />
-  Add Card
-</button>
-
-// Functional icon (no visible text)
-<button aria-label="Close">
-  <X className="w-5 h-5" />
-</button>
-
-// Loading spinner
-<Loader2 className="w-5 h-5 animate-spin" aria-label="Loading" />
-```
+**Accessibility:** See Accessibility & Testing section for icon button patterns
 
 ### Component Library Best Practices
 
@@ -1192,16 +1160,99 @@ import { Search, Plus, Trash2, Settings } from 'lucide-react';
 
 ---
 
-## Accessibility Requirements
+## Accessibility & Testing
 
-- Use semantic HTML (`<button>`, `<nav>`, `<main>`, `<article>`, etc.)
+### Accessibility Requirements (WCAG AA)
+
+**Semantic HTML:**
+- Use proper elements: `<button>`, `<nav>`, `<main>`, `<article>`, `<header>`, `<footer>`
 - Never use `<div onClick>` - use proper interactive elements
-- Keyboard navigation must work (Tab, Enter, Escape, Arrow keys)
-- ARIA labels for icon-only buttons
-- Color contrast: WCAG AA minimum (4.5:1 for text)
+- Form labels properly associated with inputs
+
+**Keyboard Navigation:**
+- All interactive elements accessible via Tab
+- Enter/Space activates buttons
+- Escape closes modals/dropdowns
+- Arrow keys for lists/menus (when appropriate)
+
+**ARIA Labels:**
+- Icon-only buttons need `aria-label`
+- Loading states need `aria-label` or `aria-live`
+- Decorative icons should have `aria-hidden="true"`
+
+**Visual Requirements:**
+- Color contrast: 4.5:1 minimum for text (WCAG AA)
 - Focus indicators must be visible
-- Alt text for all images
-- Form labels properly associated
+- Touch targets minimum 44x44px (mobile)
+- Alt text for all meaningful images
+
+**Example - Accessible Icon Button:**
+```tsx
+// Decorative icon (has visible text)
+<button>
+  <Plus className="w-4 h-4" aria-hidden="true" />
+  Add Card
+</button>
+
+// Functional icon (no visible text)
+<button aria-label="Close modal">
+  <X className="w-5 h-5" />
+</button>
+
+// Loading state
+<Loader2 className="w-5 h-5 animate-spin" aria-label="Loading" />
+```
+
+### Performance Best Practices
+
+**Images:**
+- Always use Next.js `<Image>` component
+- Lazy loading by default
+- Proper width/height to prevent layout shift
+
+**API & Caching:**
+- Aggressive localStorage caching (search: 24h, cards: 7d)
+- Debounced search (300ms recommended)
+- Batch API requests when possible (`getCardsByIds`)
+
+**Future Optimizations:**
+- Virtual scrolling for large collections (1000+ cards)
+- Service Worker for better offline support
+- IndexedDB instead of localStorage (if needed)
+
+### Testing Checklist
+
+**Functionality:**
+- [ ] Works online
+- [ ] Works offline
+- [ ] Handles errors gracefully
+- [ ] Loading states show correctly
+- [ ] No console errors
+- [ ] TypeScript compiles without errors
+
+**Accessibility:**
+- [ ] Keyboard navigation works
+- [ ] Semantic HTML used
+- [ ] ARIA labels on icon-only buttons
+- [ ] Focus indicators visible
+- [ ] Color contrast meets WCAG AA
+
+**Responsive Design:**
+- [ ] Mobile responsive (320px+)
+- [ ] Tablet layout (768px+)
+- [ ] Desktop layout (1024px+)
+- [ ] Touch targets 44x44px minimum
+
+**Performance:**
+- [ ] Images optimized (Next.js Image)
+- [ ] API responses cached
+- [ ] No unnecessary re-renders
+
+**Future Testing (Phase 3+):**
+- Unit tests (Jest + React Testing Library)
+- E2E tests (Playwright)
+- Screen reader testing
+- Lighthouse audits
 
 ---
 
@@ -1316,31 +1367,6 @@ import Image from 'next/image';
 
 ---
 
-## Performance Considerations
-
-- All card images should use Next.js `<Image>` component
-- API responses are aggressively cached in localStorage
-- Debounced search to prevent API spam (300ms recommended)
-- Lazy loading for large collections (Phase 3+)
-- Batch API requests when possible (`getCardsByIds`)
-
----
-
-## Testing Checklist
-
-- [ ] Works online
-- [ ] Works offline
-- [ ] Handles errors gracefully
-- [ ] Loading states show correctly
-- [ ] Keyboard navigation works
-- [ ] Mobile responsive (320px+)
-- [ ] No console errors
-- [ ] TypeScript compiles without errors
-- [ ] Accessibility: semantic HTML, ARIA labels
-- [ ] Performance: images optimized, API cached
-
----
-
 ## Phase Status
 
 - ✅ **Phase 1**: Foundation & User Management (COMPLETE)
@@ -1378,16 +1404,6 @@ import Image from 'next/image';
 - [ ] Add loading indicator/feedback when search is in progress
 - [ ] Investigate and optimize search performance (currently ~1 minute response time)
 - [ ] Show result count to user (e.g., "Showing 8 of 50+ results")
-
----
-
-## Important Notes
-
-- **Data privacy**: No authentication yet (Phase 1), simple name-based users
-- **Performance**: Search can be slow (~1 min), needs optimization
-- **Offline requirement**: Must work on Chromebook at school without internet
-- **User age**: Child is 8-10 years old, UI must be simple and intuitive
-- **Multiple users**: Parent and child share device, need easy user switching
 
 ---
 
@@ -1507,20 +1523,6 @@ NEXT_PUBLIC_SUPABASE_URL=...
 - [ ] Test on mobile device
 - [ ] Verify offline mode works
 
-### Monitoring & Logs
-
-**Vercel Dashboard:**
-- Build logs (if deployment fails)
-- Runtime logs (server errors)
-- Analytics (page views, performance)
-
-**Access Logs:**
-1. Go to Vercel dashboard
-2. Select your project
-3. Click "Deployments"
-4. Click on specific deployment
-5. View "Build Logs" or "Function Logs"
-
 ### Troubleshooting
 
 **Build Fails:**
@@ -1575,18 +1577,27 @@ NEXT_PUBLIC_SUPABASE_URL=...
 
 ## Analytics & Monitoring
 
-**Current: Not Implemented (Phase 1-2)**
-- No analytics yet (KISS)
-- Console logging for debugging
-- Add when needed in Phase 3+
+### Current Approach (Phase 1-2)
+**Console Logging:**
+- `console.error()` for errors
+- `console.warn()` for warnings  
+- `console.log()` for debugging
+- Browser DevTools for inspection
 
-**Future: Vercel Analytics (Phase 3+)**
-- Built-in with Vercel hosting
+**Vercel Dashboard (Deployment):**
+- Build logs (if deployment fails)
+- Runtime logs (server errors)
+- Basic analytics (page views, performance)
+- Access via: Vercel dashboard → Deployments → [deployment] → Logs
+
+### Future: Vercel Analytics (Phase 3+)
+**Features:**
 - Privacy-friendly (no cookies, GDPR compliant)
 - Zero configuration (enable in dashboard)
-- Automatic tracking: page views, performance, traffic
+- Automatic tracking: page views, performance, traffic sources
+- Real User Monitoring (RUM)
 
-**Implementation (when needed):**
+**Implementation:**
 ```bash
 npm install @vercel/analytics
 ```
@@ -1607,7 +1618,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-**See `spec.md` for detailed analytics strategy**
+**See `spec.md` for detailed analytics strategy and custom event tracking**
 
 ---
 
@@ -1720,7 +1731,6 @@ npx tsc --noEmit
 
 **Performance Optimization:**
 - Virtual scrolling for large collections (1000+ cards)
-- Image lazy loading (already using Next.js Image)
 - Service Worker for better offline support
 - IndexedDB instead of localStorage (if needed)
 
@@ -1729,12 +1739,6 @@ npx tsc --noEmit
 - E2E tests (Playwright)
 - Add when codebase stabilizes
 - Not needed for Phase 1-2 (KISS)
-
-**Accessibility Audit (Phase 4):**
-- Screen reader testing
-- Keyboard navigation verification
-- Color contrast audit
-- WCAG AAA compliance (currently targeting AA)
 
 ---
 

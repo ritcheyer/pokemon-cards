@@ -12,12 +12,12 @@ A Next.js-based web application for managing and viewing a Pokemon card collecti
 - **Runtime**: React 19.1.0
 
 ### Additional Libraries
-- **UI Components**: shadcn/ui (to be added)
-- **Icons**: Lucide React (to be added)
+- **UI Components**: shadcn/ui (install as needed)
+- **Icons**: Lucide React (install as needed)
 - **Data Fetching**: Pokemon TCG API (https://pokemontcg.io/)
-- **State Management**: React hooks + Context API
-- **Database**: Supabase (PostgreSQL with real-time subscriptions)
-- **Data Persistence**: Hybrid approach (localStorage + Supabase sync)
+- **State Management**: React hooks (no external state library yet)
+- **Database**: Supabase (PostgreSQL with Row Level Security)
+- **Data Persistence**: Hybrid offline-first (localStorage + Supabase sync)
 - **Analytics**: Vercel Analytics (privacy-friendly, zero-config)
 
 ## Data Architecture
@@ -192,13 +192,15 @@ interface CollectionCard {
 - Tailwind dark mode classes
 
 #### 10. Data Persistence
-- **Phase 1**: localStorage
-  - Store users array
-  - Store collection cards array
-  - Store user preferences (theme, last selected user)
-- **Phase 2** (Future): Database migration
-  - Vercel Postgres or similar
-  - Export/import functionality for migration
+- **Current (Phase 1 - Implemented)**: Hybrid Offline-First
+  - Supabase (PostgreSQL) for persistent storage
+  - localStorage for caching and offline support
+  - Optimistic updates with automatic sync
+  - Offline queue for changes when disconnected
+  - Store user preferences (theme, last selected user) in localStorage
+- **Future**: Enhanced offline capabilities
+  - IndexedDB for larger datasets (if needed)
+  - Service Worker for better offline support
 
 ## API Integration
 
@@ -232,45 +234,44 @@ interface CollectionCard {
 ```
 src/
 ├── app/
-│   ├── layout.tsx              # Root layout with theme provider
-│   ├── page.tsx                # User selection page
-│   ├── [userId]/
-│   │   ├── layout.tsx          # User-specific layout with nav
-│   │   ├── page.tsx            # Collection view
-│   │   ├── add/page.tsx        # Add card page
-│   │   └── stats/page.tsx      # Statistics page
+│   ├── layout.tsx              # Root layout with fonts
+│   ├── page.tsx                # User selection + collection view
 │   └── globals.css
 ├── components/
-│   ├── ui/                     # shadcn/ui components
-│   ├── CardGrid.tsx
-│   ├── CardItem.tsx
-│   ├── CardDetail.tsx
-│   ├── SearchBar.tsx
-│   ├── FilterPanel.tsx
-│   ├── AddCardForm.tsx
-│   ├── UserSelector.tsx
-│   ├── StatsCard.tsx
-│   └── ThemeToggle.tsx
+│   ├── ui/                     # shadcn/ui components (install as needed)
+│   │   ├── Button/
+│   │   ├── Card/
+│   │   ├── Input/
+│   │   └── ...
+│   └── features/               # Feature-specific components
+│       ├── CardGrid/
+│       ├── UserProfile/
+│       ├── SearchBar/
+│       └── ...
 ├── lib/
 │   ├── api/
-│   │   └── pokemon-tcg.ts      # API client
+│   │   └── pokemon-tcg.ts      # Pokemon TCG API client with caching
+│   ├── db/
+│   │   ├── supabase.ts         # Supabase client configuration
+│   │   ├── sync.ts             # Offline-first sync layer
+│   │   └── database.types.ts   # Generated DB types
 │   ├── storage/
-│   │   └── localStorage.ts      # Storage utilities
+│   │   └── localStorage.ts     # Cache management utilities
 │   ├── types.ts                # TypeScript interfaces
 │   └── utils.ts                # Helper functions
-└── hooks/
-    ├── useCollection.ts
-    ├── useUsers.ts
-    └── useTheme.ts
+└── styles/
+    └── globals.css             # Global styles
 ```
 
 ## Development Phases
 
-### Phase 1: Foundation (Week 1)
-- [ ] Set up Pokemon TCG API integration
-- [ ] Create data models and TypeScript types
-- [ ] Implement localStorage utilities
-- [ ] Build user management (selection + creation)
+### Phase 1: Foundation ✅ COMPLETE
+- [x] Set up Pokemon TCG API integration
+- [x] Create data models and TypeScript types
+- [x] Implement localStorage utilities
+- [x] Implement Supabase integration with RLS policies
+- [x] Build offline-first sync layer
+- [x] Build user management (selection + creation)
 
 ### Phase 2: Core Collection Features (Week 2)
 - [ ] Collection grid view
