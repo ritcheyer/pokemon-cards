@@ -30,10 +30,10 @@ export function AddCardModal({ userId, onClose, onCardAdded }: AddCardModalProps
   const [condition, setCondition] = useState<CollectionCard['condition']>('near-mint');
   const [notes, setNotes] = useState('');
 
-  // Debounced search function
-  const performSearch = useCallback(
+  // Debounced search function - memoize the debounced function itself
+  const debouncedSearch = useCallback(
     debounce(async (query: string) => {
-      if (!query.trim()) {
+      if (!query.trim() || query.length < 2) {
         setSearchResults([]);
         setSearching(false);
         return;
@@ -54,24 +54,38 @@ export function AddCardModal({ userId, onClose, onCardAdded }: AddCardModalProps
       } finally {
         setSearching(false);
       }
-    }, 500),
+    }, 300), // Reduced from 500ms to 300ms for faster feel
     []
   );
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchQuery.trim()) return;
+    // Form submit should search immediately, not debounced
+    const query = searchQuery.trim();
+    if (!query || query.length < 2) return;
 
     setSearching(true);
     setError(null);
-    performSearch(searchQuery);
+    
+    try {
+      console.log('Searching for:', query);
+      const results = await searchCards(query);
+      console.log('Search results:', results.length);
+      setSearchResults(results);
+      setError(null);
+    } catch (err) {
+      console.error('Search error:', err);
+      setError(`Failed to search: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setSearchResults([]);
+    } finally {
+      setSearching(false);
+    }
   };
 
   const handleSearchInputChange = (value: string) => {
     setSearchQuery(value);
-    if (value.trim().length >= 2) {
-      // Don't set searching to true here - let the debounced function handle it
-      performSearch(value);
+    if (value.length >= 2) {
+      debouncedSearch(value);
     } else {
       setSearchResults([]);
       setSearching(false);

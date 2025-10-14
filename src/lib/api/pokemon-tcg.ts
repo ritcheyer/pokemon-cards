@@ -48,8 +48,12 @@ export async function searchCards(query: string): Promise<PokemonCard[]> {
   }
   
   try {
-    // Use wildcard matching - the API supports name:*query* for partial matches
-    const searchQuery = `name:*${query}*`;
+    // For multi-word queries, use quoted exact match with wildcards
+    // For single words, use simple wildcard matching
+    const hasSpace = query.includes(' ');
+    const searchQuery = hasSpace 
+      ? `name:"*${query}*"` 
+      : `name:*${query}*`;
     const url = `${API_BASE_URL}/cards?q=${encodeURIComponent(searchQuery)}&pageSize=50`;
     
     console.log('Searching Pokemon TCG API:', url);
