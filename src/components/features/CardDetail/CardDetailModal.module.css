@@ -66,6 +66,19 @@
   @apply text-gray-900 dark:text-gray-100;
 }
 
+/* Notes Display */
+.notesDisplay {
+  @apply mt-4 pt-4 border-t border-gray-200 dark:border-gray-700;
+}
+
+.notesDisplay h4 {
+  @apply text-sm font-medium text-gray-600 dark:text-gray-400 mb-2;
+}
+
+.notesDisplay p {
+  @apply text-gray-900 dark:text-gray-100 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 whitespace-pre-wrap;
+}
+
 /* Edit Form */
 .editForm {
   @apply space-y-4;

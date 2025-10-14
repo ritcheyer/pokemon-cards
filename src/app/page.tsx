@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { syncUsersFromServer, createUser } from '@/lib/db/sync';
 import type { User } from '@/lib/types';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
-import { CardGrid } from '@/components/features/CardGrid';
 
 export default function Home() {
+  const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showCreateUser, setShowCreateUser] = useState(false);
   const [newUserName, setNewUserName] = useState('');
   const [loading, setLoading] = useState(true);
@@ -35,17 +35,22 @@ export default function Home() {
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newUserName.trim()) return;
     
+    if (!newUserName.trim()) {
+      setError('Please enter a name');
+      return;
+    }
+
     setLoading(true);
     setError(null);
+
     try {
-      const user = await createUser(newUserName.trim());
-      setUsers([...users, user]);
+      const newUser = await createUser(newUserName.trim());
+      setUsers([...users, newUser]);
       setNewUserName('');
       setShowCreateUser(false);
-      // Auto-select the newly created user
-      setSelectedUser(user);
+      // Navigate to the new user's collection
+      router.push(`/user/${newUser.id}`);
     } catch (err) {
       console.error('Error creating user:', err);
       setError('Failed to create user. Please try again.');
@@ -55,8 +60,7 @@ export default function Home() {
   };
 
   const handleSelectUser = (user: User) => {
-    setSelectedUser(user);
-    // TODO: Navigate to collection page in Phase 2
+    router.push(`/user/${user.id}`);
   };
 
   // Close create user modal on escape
@@ -69,8 +73,7 @@ export default function Home() {
   }, showCreateUser);
 
   // User selection screen
-  if (!selectedUser) {
-    return (
+  return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
@@ -179,32 +182,4 @@ export default function Home() {
         </div>
       </div>
     );
-  }
-
-  // Collection view
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto p-4 md:p-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
-              {selectedUser.name.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{selectedUser.name}&apos;s Collection</h1>
-              <p className="text-gray-600 dark:text-gray-400">Welcome back!</p>
-            </div>
-          </div>
-          <button
-            onClick={() => setSelectedUser(null)}
-            className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
-          >
-            Switch User
-          </button>
-        </div>
-
-        <CardGrid userId={selectedUser.id} />
-      </div>
-    </div>
-  );
 }

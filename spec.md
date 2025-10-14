@@ -230,12 +230,35 @@ interface CollectionCard {
 - **Typography**: System fonts (already configured in Next.js)
 - **Spacing**: Consistent use of Tailwind spacing scale
 
+### URL Structure & Routing
+**Progressive Enhancement**: URLs must update to reflect application state for:
+- Shareable links
+- Browser history (back/forward buttons)
+- Bookmarkable pages
+- Works without JavaScript (server-side rendering)
+
+**Route Structure**:
+```
+/                           # User selection page
+/user/[userId]             # User's collection grid
+/user/[userId]/card/[cardId]  # Card detail view (optional - can be modal with URL)
+```
+
+**Implementation**:
+- Use Next.js App Router with dynamic routes
+- Update URL on navigation using `useRouter` and `Link` components
+- Support deep linking (direct access to any URL)
+- Preserve query parameters for filters/search state
+
 ### Component Structure
 ```
 src/
 ├── app/
 │   ├── layout.tsx              # Root layout with fonts
-│   ├── page.tsx                # User selection + collection view
+│   ├── page.tsx                # User selection page
+│   ├── user/
+│   │   └── [userId]/
+│   │       └── page.tsx        # Collection view for specific user
 │   └── globals.css
 ├── components/
 │   ├── ui/                     # shadcn/ui components (install as needed)

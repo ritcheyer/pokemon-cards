@@ -206,20 +206,22 @@ export function CardDetailModal({
                     </div>
                   </div>
                 ) : (
-                  <dl className={styles.detailsList}>
-                    <dt>Quantity</dt>
-                    <dd>{collectionCard.quantity}</dd>
-                    
-                    <dt>Condition</dt>
-                    <dd>{formatCondition(collectionCard.condition)}</dd>
+                  <>
+                    <dl className={styles.detailsList}>
+                      <dt>Quantity</dt>
+                      <dd>{collectionCard.quantity}</dd>
+                      
+                      <dt>Condition</dt>
+                      <dd>{formatCondition(collectionCard.condition)}</dd>
+                    </dl>
                     
                     {collectionCard.notes && (
-                      <>
-                        <dt>Notes</dt>
-                        <dd>{collectionCard.notes}</dd>
-                      </>
+                      <div className={styles.notesDisplay}>
+                        <h4>Notes</h4>
+                        <p>{collectionCard.notes}</p>
+                      </div>
                     )}
-                  </dl>
+                  </>
                 )}
               </div>
             </div>
