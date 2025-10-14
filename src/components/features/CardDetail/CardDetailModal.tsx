@@ -225,7 +225,7 @@ export function CardDetailModal({
                     {collectionCard.notes && (
                       <div className={styles.notesDisplay}>
                         <h4>Notes</h4>
-                        <p>{collectionCard.notes}</p>
+                        <p className={styles.notesText}>{collectionCard.notes}</p>
                       </div>
                     )}
                   </>

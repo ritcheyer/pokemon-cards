@@ -230,6 +230,14 @@ interface CollectionCard {
 - **Typography**: System fonts (already configured in Next.js)
 - **Spacing**: Consistent use of Tailwind spacing scale
 
+### CSS Best Practices
+- **Avoid element selectors**: Always use specific class names instead of styling HTML elements directly
+  - ❌ Bad: `.container p { ... }` (styles all paragraphs in container)
+  - ✅ Good: `.textContent { ... }` (explicit, scoped class)
+- **Rationale**: Element selectors have lower specificity and can cause unexpected inheritance issues
+- **CSS Modules**: Leverage CSS Modules for automatic scoping and collision prevention
+- **No !important**: If you need `!important`, the selector specificity is wrong - use a more specific class instead
+
 ### URL Structure & Routing
 **Progressive Enhancement**: URLs must update to reflect application state for:
 - Shareable links
@@ -296,24 +304,28 @@ src/
 - [x] Build offline-first sync layer
 - [x] Build user management (selection + creation)
 
-### Phase 2: Core Collection Features (Week 2)
-- [ ] Collection grid view
-- [ ] Card detail modal
-- [ ] Add card functionality (search + add)
-- [ ] Delete card functionality
+### Phase 2: Core Collection Features ✅ COMPLETE
+- [x] Collection grid view
+- [x] Card detail modal with edit functionality
+- [x] Add card functionality (search + add)
+- [x] Edit card functionality (quantity, condition, notes)
+- [x] Delete card functionality
+- [x] URL routing with Next.js App Router
+- [x] Progressive enhancement (shareable URLs, browser history)
 
 ### Phase 3: Enhanced Features (Week 3)
 - [ ] Search and filter implementation
 - [ ] Sorting functionality
-- [ ] Edit card details
 - [ ] Statistics dashboard
 
 ### Phase 4: Polish (Week 4)
-- [ ] Dark mode implementation
-- [ ] Responsive design refinement
+- [x] Dark mode implementation
+- [x] Responsive design refinement
+- [x] Error handling and loading states
+- [x] Empty states and user feedback
 - [ ] Performance optimization
-- [ ] Error handling and loading states
-- [ ] Empty states and user feedback
+- [ ] Accessibility audit
+- [ ] Cross-browser testing
 
 ## Future Enhancements (Post-MVP)
 
