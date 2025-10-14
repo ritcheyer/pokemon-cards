@@ -1,13 +1,13 @@
+import type { CardCondition } from './types';
+
 /**
  * Card condition options
  */
-export const CARD_CONDITIONS = [
+export const CARD_CONDITIONS: CardCondition[] = [
   'mint',
   'near-mint',
   'excellent',
   'good',
   'played',
   'poor',
-] as const;
-
-export type CardCondition = typeof CARD_CONDITIONS[number];
+];

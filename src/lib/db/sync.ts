@@ -179,9 +179,11 @@ export async function addCardToCollection(
   }
 
   try {
+    const rowData = collectionCardToRow(newCard);
     const { data, error } = await supabase
       .from('collection_cards')
-      .insert(collectionCardToRow(newCard))
+      // @ts-ignore - Supabase type inference issue with generated types
+      .insert(rowData)
       .select()
       .single();
 
@@ -228,13 +230,15 @@ export async function updateCardInCollection(
   }
 
   try {
+    const updateData = {
+      quantity: updates.quantity,
+      condition: updates.condition,
+      notes: updates.notes || null,
+    };
     const { data, error } = await supabase
       .from('collection_cards')
-      .update({
-        quantity: updates.quantity,
-        condition: updates.condition,
-        notes: updates.notes || null,
-      })
+      // @ts-ignore - Supabase type inference issue with generated types
+      .update(updateData)
       .eq('id', cardId)
       .select()
       .single();
@@ -313,21 +317,27 @@ export async function syncPendingChanges(): Promise<void> {
   try {
     for (const change of pending) {
       switch (change.type) {
-        case 'add':
+        case 'add': {
+          const rowData = collectionCardToRow(change.data);
           await supabase
             .from('collection_cards')
-            .insert(collectionCardToRow(change.data));
+            // @ts-ignore - Supabase type inference issue with generated types
+            .insert(rowData);
           break;
-        case 'update':
+        }
+        case 'update': {
+          const updateData = {
+            quantity: change.data.quantity,
+            condition: change.data.condition,
+            notes: change.data.notes || null,
+          };
           await supabase
             .from('collection_cards')
-            .update({
-              quantity: change.data.quantity,
-              condition: change.data.condition,
-              notes: change.data.notes || null,
-            })
+            // @ts-ignore - Supabase type inference issue with generated types
+            .update(updateData)
             .eq('id', change.data.id);
           break;
+        }
         case 'delete':
           await supabase
             .from('collection_cards')
