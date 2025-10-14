@@ -5,12 +5,15 @@
 ### 1. **Duplicate Constants** ⭐⭐⭐
 
 #### CONDITIONS Array (Duplicated 3x)
+
 **Found in:**
+
 - `CardDetailModal.tsx`
 - `AddCardForm.tsx`
 - `CardDetailModal.tsx.backup` (can delete)
 
 **Current:**
+
 ```typescript
 const CONDITIONS: CollectionCard['condition'][] = [
   'mint',
@@ -24,6 +27,7 @@ const CONDITIONS: CollectionCard['condition'][] = [
 
 **Solution:**
 Create `src/lib/constants.ts`:
+
 ```typescript
 export const CARD_CONDITIONS = [
   'mint',
@@ -38,6 +42,7 @@ export type CardCondition = typeof CARD_CONDITIONS[number];
 ```
 
 **Benefits:**
+
 - Single source of truth
 - Easy to add/remove conditions
 - Type-safe
@@ -46,12 +51,15 @@ export type CardCondition = typeof CARD_CONDITIONS[number];
 ---
 
 #### formatCondition Function (Duplicated 2x + utility)
+
 **Found in:**
+
 - `CardItem.tsx` (local function)
 - `AddCardForm.tsx` (local function)
 - `lib/utils.ts` (already exists!)
 
 **Current (duplicated):**
+
 ```typescript
 const formatCondition = (cond: string) => {
   return cond
@@ -63,11 +71,13 @@ const formatCondition = (cond: string) => {
 
 **Solution:**
 Remove local functions, import from `lib/utils.ts`:
+
 ```typescript
 import { formatCondition } from '@/lib/utils';
 ```
 
 **Benefits:**
+
 - Already exists in utils!
 - Remove ~10 lines per file
 - Consistent formatting
@@ -77,16 +87,19 @@ import { formatCondition } from '@/lib/utils';
 ### 2. **Inline Button/Input Styles in page.tsx** ⭐⭐⭐
 
 **Found in:**
+
 - `app/page.tsx` - Create user modal
 - `app/user/[userId]/page.tsx` - Switch User button
 
 **Current:**
+
 ```tsx
 <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer">
 ```
 
 **Solution:**
 Use shared `Button` and `Input` components:
+
 ```tsx
 import { Button, Input } from '@/components/ui';
 
@@ -108,6 +121,7 @@ import { Button, Input } from '@/components/ui';
 ```
 
 **Benefits:**
+
 - Consistent with rest of app
 - Cleaner code
 - Easier to maintain
@@ -118,11 +132,13 @@ import { Button, Input } from '@/components/ui';
 ### 3. **Modal Structure Duplication** ⭐⭐
 
 **Found in:**
+
 - `AddCardModal.tsx` - Custom modal structure
 - `CardDetailModal.tsx` - Custom modal structure
 
 **Current:**
 Both have:
+
 ```tsx
 <div className={styles.overlay} onClick={onClose}>
   <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -138,6 +154,7 @@ Both have:
 
 **Solution:**
 We already created `Modal` component! Use it:
+
 ```tsx
 import { Modal } from '@/components/ui';
 
@@ -158,6 +175,7 @@ import { Modal } from '@/components/ui';
 ```
 
 **Benefits:**
+
 - Remove ~30 lines per modal
 - Consistent modal behavior
 - Built-in escape key handling
@@ -170,11 +188,13 @@ import { Modal } from '@/components/ui';
 ### 4. **Error Display Pattern** ⭐⭐
 
 **Found in:**
+
 - `AddCardModal.tsx`
 - `CardDetailModal.tsx`
 - `app/page.tsx`
 
 **Current:**
+
 ```tsx
 {error && (
   <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400">
@@ -185,6 +205,7 @@ import { Modal } from '@/components/ui';
 
 **Solution:**
 Create `Alert` component:
+
 ```tsx
 // src/components/ui/Alert/Alert.tsx
 <Alert variant="error">{error}</Alert>
@@ -193,6 +214,7 @@ Create `Alert` component:
 ```
 
 **Benefits:**
+
 - Consistent error/success messaging
 - Easy to add icons
 - Reusable across app
@@ -202,23 +224,27 @@ Create `Alert` component:
 ### 5. **Loading Spinner Pattern** ⭐⭐
 
 **Found in:**
+
 - `app/page.tsx`
 - `app/user/[userId]/page.tsx`
 - `SearchResults.tsx`
 
 **Current:**
+
 ```tsx
 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
 ```
 
 **Solution:**
 Create `Spinner` component:
+
 ```tsx
 // src/components/ui/Spinner/Spinner.tsx
 <Spinner size="sm" | "md" | "lg" />
 ```
 
 **Benefits:**
+
 - Consistent loading states
 - Easy to customize
 - Reusable
@@ -228,10 +254,12 @@ Create `Spinner` component:
 ### 6. **Avatar/User Icon Pattern** ⭐
 
 **Found in:**
+
 - `app/page.tsx` (user list)
 - `app/user/[userId]/page.tsx` (header)
 
 **Current:**
+
 ```tsx
 <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
   {user.name.charAt(0).toUpperCase()}
@@ -240,12 +268,14 @@ Create `Spinner` component:
 
 **Solution:**
 Create `Avatar` component:
+
 ```tsx
 // src/components/ui/Avatar/Avatar.tsx
 <Avatar name={user.name} size="md" />
 ```
 
 **Benefits:**
+
 - Consistent user representation
 - Easy to add images later
 - Reusable
@@ -257,6 +287,7 @@ Create `Avatar` component:
 ### 7. **Backup File Cleanup** ⭐
 
 **Found:**
+
 - `CardDetailModal.tsx.backup`
 
 **Solution:**
@@ -267,6 +298,7 @@ Delete it - we have git history
 ### 8. **Card Display Logic** ⭐
 
 **Found in:**
+
 - `CardItem.tsx` - Card preview
 - `AddCardForm.tsx` - Card preview
 - `CardDetailModal.tsx` - Card display
@@ -282,17 +314,20 @@ Wait until we have 3+ identical patterns before extracting.
 ## Implementation Priority
 
 ### Phase 1: Quick Wins (30 min)
+
 1. ✅ Delete `CardDetailModal.tsx.backup`
 2. ✅ Extract CONDITIONS constant
 3. ✅ Remove duplicate formatCondition functions
 4. ✅ Migrate page.tsx to use Button/Input components
 
 ### Phase 2: Modal Refactor (1 hour)
+
 1. ✅ Migrate AddCardModal to use Modal component
 2. ✅ Migrate CardDetailModal to use Modal component
 3. ✅ Remove duplicate modal CSS
 
 ### Phase 3: New Components (1-2 hours)
+
 1. ✅ Create Alert component
 2. ✅ Create Spinner component
 3. ✅ Create Avatar component
@@ -303,6 +338,7 @@ Wait until we have 3+ identical patterns before extracting.
 ## Estimated Impact
 
 ### Code Reduction
+
 - **Constants extraction**: ~30 lines
 - **formatCondition cleanup**: ~20 lines
 - **page.tsx migration**: ~50 lines
@@ -310,12 +346,14 @@ Wait until we have 3+ identical patterns before extracting.
 - **Total**: ~160 lines removed
 
 ### New Components
+
 - Alert: ~30 lines
 - Spinner: ~20 lines
 - Avatar: ~40 lines
 - **Total**: ~90 lines added
 
 ### Net Result
+
 - **~70 lines net reduction**
 - **Much more maintainable**
 - **Consistent patterns throughout**
@@ -325,12 +363,14 @@ Wait until we have 3+ identical patterns before extracting.
 ## Recommendation
 
 **Do Phase 1 now** (quick wins, low risk):
+
 1. Delete backup file
 2. Extract constants
 3. Clean up formatCondition
 4. Migrate page.tsx buttons/inputs
 
 **Do Phase 2 & 3 later** (when adding new features):
+
 - Modal migration can wait
 - Alert/Spinner/Avatar can be added as needed
 

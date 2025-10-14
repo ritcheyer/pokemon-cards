@@ -3,12 +3,14 @@
 ## 🎯 Critical Path Tests
 
 ### User Management
+
 - [ ] Create new user
 - [ ] Select existing user
 - [ ] Switch between users
 - [ ] User avatar displays correctly
 
 ### Card Search & Add
+
 - [ ] Search single-word Pokemon (e.g., "pikachu")
 - [ ] Search multi-word Pokemon (e.g., "emolga ex")
 - [ ] Search with special characters
@@ -23,12 +25,14 @@
 - [ ] Close modal with Escape key
 
 ### Card Collection View
+
 - [ ] Cards display in grid
 - [ ] Card images load correctly
 - [ ] Card details show (name, set, rarity, condition, quantity)
 - [ ] Click card to open detail modal
 
 ### Card Detail & Edit
+
 - [ ] View mode displays all card info correctly
 - [ ] Click "Edit" button to enter edit mode
 - [ ] Edit quantity (increase/decrease)
@@ -43,6 +47,7 @@
 ## 🎨 UI Component Tests
 
 ### Button Component
+
 - [ ] Primary button styling correct
 - [ ] Secondary button styling correct (white background)
 - [ ] Danger button styling correct
@@ -53,6 +58,7 @@
 - [ ] Dark mode styling
 
 ### Input Component
+
 - [ ] Label displays
 - [ ] Input accepts text
 - [ ] Number input works (quantity)
@@ -62,6 +68,7 @@
 - [ ] Dark mode styling
 
 ### Select Component
+
 - [ ] Label displays
 - [ ] Dropdown opens
 - [ ] Options selectable
@@ -71,6 +78,7 @@
 - [ ] Dark mode arrow color
 
 ### Textarea Component
+
 - [ ] Label displays
 - [ ] Multi-line text works
 - [ ] Placeholder shows
@@ -79,6 +87,7 @@
 - [ ] Dark mode styling
 
 ### Link (Switch User)
+
 - [ ] Styled like secondary button
 - [ ] Navigates to home page
 - [ ] Hover state works
@@ -87,18 +96,21 @@
 ## ⚡ Performance Tests
 
 ### Search Performance
+
 - [ ] Debounce works (300ms delay)
 - [ ] No duplicate searches
 - [ ] Cached results load instantly
 - [ ] Form submit searches immediately (no debounce)
 
 ### Data Persistence
+
 - [ ] Added cards persist after refresh
 - [ ] Edited cards persist after refresh
 - [ ] Deleted cards removed after refresh
 - [ ] User selection persists
 
 ## 🌓 Dark Mode Tests
+
 - [ ] Toggle dark mode works
 - [ ] All buttons readable in dark mode
 - [ ] All inputs readable in dark mode
@@ -107,6 +119,7 @@
 - [ ] Card grid readable
 
 ## 📱 Responsive Tests (if applicable)
+
 - [ ] Mobile view works
 - [ ] Tablet view works
 - [ ] Modal fits on small screens
@@ -116,18 +129,21 @@
 ## 🐛 Edge Cases
 
 ### Search
+
 - [ ] Empty search (no results)
 - [ ] Very long Pokemon name
 - [ ] Special characters in search
 - [ ] Search while previous search loading
 
 ### Forms
+
 - [ ] Submit with invalid data
 - [ ] Quantity = 0 or negative
 - [ ] Very long notes text
 - [ ] Rapid clicking buttons
 
 ### Network
+
 - [ ] Offline mode (if implemented)
 - [ ] Slow network simulation
 - [ ] API error handling
@@ -139,10 +155,12 @@
 **Browser:** [Fill in]
 **OS:** [Fill in]
 
-### Critical Issues Found:
+### Critical Issues Found
+
 - [ ] None
 
-### Minor Issues Found:
+### Minor Issues Found
+
 - [ ] None
 
-### Notes:
+### Notes

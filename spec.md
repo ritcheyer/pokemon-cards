@@ -1,20 +1,23 @@
 # Pokemon Card Collection Website - Project Specification
 
 ## Project Overview
+
 A Next.js-based web application for managing and viewing a Pokemon card collection. The application will support multiple users, each with their own separate collection, and integrate with the Pokemon TCG API for card data and images.
 
 ## Technical Stack
 
 ### Core Technologies
+
 - **Framework**: Next.js 15.5.4 (App Router)
 - **Language**: TypeScript 5
 - **Styling**: Tailwind CSS v4
 - **Runtime**: React 19.1.0
 
 ### Additional Libraries
+
 - **UI Components**: shadcn/ui (install as needed)
 - **Icons**: Lucide React (install as needed)
-- **Data Fetching**: Pokemon TCG API (https://pokemontcg.io/)
+- **Data Fetching**: Pokemon TCG API (<https://pokemontcg.io/>)
 - **State Management**: React hooks (no external state library yet)
 - **Database**: Supabase (PostgreSQL with Row Level Security)
 - **Data Persistence**: Hybrid offline-first (localStorage + Supabase sync)
@@ -23,7 +26,9 @@ A Next.js-based web application for managing and viewing a Pokemon card collecti
 ## Data Architecture
 
 ### Data Source Strategy
+
 **Option A: Pokemon TCG API Integration**
+
 - Use Pokemon TCG API for card lookup and metadata
 - Store user's owned cards locally with references to API card IDs
 - Cache API responses to minimize requests
@@ -32,6 +37,7 @@ A Next.js-based web application for managing and viewing a Pokemon card collecti
 ### Data Models
 
 #### User
+
 ```typescript
 interface User {
   id: string;
@@ -42,6 +48,7 @@ interface User {
 ```
 
 #### Card (from Pokemon TCG API)
+
 ```typescript
 interface PokemonCard {
   id: string;                    // API card ID
@@ -76,6 +83,7 @@ interface PokemonCard {
 ```
 
 #### CollectionCard (User's owned card)
+
 ```typescript
 interface CollectionCard {
   id: string;                    // Unique collection entry ID
@@ -93,6 +101,7 @@ interface CollectionCard {
 ### Phase 1: Core Features
 
 #### 1. User Management
+
 - **User Selection Screen**
   - Display all users as cards/buttons
   - "Add New User" button
@@ -100,6 +109,7 @@ interface CollectionCard {
   - Store users in localStorage
 
 #### 2. Collection View (Main Page)
+
 - **Layout**: Responsive grid of cards
   - Desktop: 4-6 cards per row
   - Tablet: 3-4 cards per row
@@ -114,6 +124,7 @@ interface CollectionCard {
 - **Empty State**: Friendly message with "Add Card" CTA
 
 #### 3. Search & Filter
+
 - **Search Bar**: Search by card name (real-time)
 - **Filters**:
   - Type (Fire, Water, Grass, etc.)
@@ -125,6 +136,7 @@ interface CollectionCard {
 - **Clear Filters** button
 
 #### 4. Sorting
+
 - Sort options:
   - Alphabetical (A-Z, Z-A)
   - Date Added (Newest, Oldest)
@@ -134,6 +146,7 @@ interface CollectionCard {
 - Dropdown selector in header
 
 #### 5. Card Detail View
+
 - **Modal or Side Panel** with:
   - Large card image
   - Full card details (HP, type, attacks, abilities)
@@ -146,6 +159,7 @@ interface CollectionCard {
   - Edit/Delete buttons
 
 #### 6. Add Card Form
+
 - **Two-step process**:
   1. Search Pokemon TCG API for card
   2. Add collection details (quantity, condition, notes)
@@ -165,6 +179,7 @@ interface CollectionCard {
   - Save/Cancel buttons
 
 #### 7. Statistics Dashboard
+
 - **Overview Cards**:
   - Total cards count
   - Unique cards count
@@ -177,6 +192,7 @@ interface CollectionCard {
   - Most valuable cards (top 5-10)
 
 #### 8. Responsive Design
+
 - Mobile-first approach
 - Breakpoints:
   - Mobile: < 640px
@@ -186,12 +202,14 @@ interface CollectionCard {
 - Optimized images for different screen sizes
 
 #### 9. Dark Mode Support
+
 - System preference detection
 - Manual toggle switch
 - Persist preference in localStorage
 - Tailwind dark mode classes
 
 #### 10. Data Persistence
+
 - **Current (Phase 1 - Implemented)**: Hybrid Offline-First
   - Supabase (PostgreSQL) for persistent storage
   - localStorage for caching and offline support
@@ -205,6 +223,7 @@ interface CollectionCard {
 ## API Integration
 
 ### Pokemon TCG API
+
 - **Base URL**: `https://api.pokemontcg.io/v2`
 - **API Key**: Required (free tier available)
 - **Endpoints to use**:
@@ -215,6 +234,7 @@ interface CollectionCard {
   - `GET /rarities` - Get all rarities
 
 ### Rate Limiting
+
 - Implement request caching
 - Debounce search inputs
 - Cache card details locally after first fetch
@@ -222,8 +242,9 @@ interface CollectionCard {
 ## UI/UX Design Guidelines
 
 ### Design Style
+
 - **Aesthetic**: Clean, minimal, functional
-- **Color Palette**: 
+- **Color Palette**:
   - Light mode: White/light gray backgrounds, dark text
   - Dark mode: Dark gray/black backgrounds, light text
   - Accent colors from Pokemon types (red, blue, green, etc.)
@@ -231,6 +252,7 @@ interface CollectionCard {
 - **Spacing**: Consistent use of Tailwind spacing scale
 
 ### CSS Best Practices
+
 - **Avoid element selectors**: Always use specific class names instead of styling HTML elements directly
   - ❌ Bad: `.container p { ... }` (styles all paragraphs in container)
   - ✅ Good: `.textContent { ... }` (explicit, scoped class)
@@ -239,27 +261,32 @@ interface CollectionCard {
 - **No !important**: If you need `!important`, the selector specificity is wrong - use a more specific class instead
 
 ### URL Structure & Routing
+
 **Progressive Enhancement**: URLs must update to reflect application state for:
+
 - Shareable links
 - Browser history (back/forward buttons)
 - Bookmarkable pages
 - Works without JavaScript (server-side rendering)
 
 **Route Structure**:
-```
+
+```text
 /                           # User selection page
 /user/[userId]             # User's collection grid
 /user/[userId]/card/[cardId]  # Card detail view (optional - can be modal with URL)
 ```
 
 **Implementation**:
+
 - Use Next.js App Router with dynamic routes
 - Update URL on navigation using `useRouter` and `Link` components
 - Support deep linking (direct access to any URL)
 - Preserve query parameters for filters/search state
 
 ### Component Structure
-```
+
+```text
 src/
 ├── app/
 │   ├── layout.tsx              # Root layout with fonts
@@ -297,6 +324,7 @@ src/
 ## Development Phases
 
 ### Phase 1: Foundation ✅ COMPLETE
+
 - [x] Set up Pokemon TCG API integration
 - [x] Create data models and TypeScript types
 - [x] Implement localStorage utilities
@@ -305,6 +333,7 @@ src/
 - [x] Build user management (selection + creation)
 
 ### Phase 2: Core Collection Features ✅ COMPLETE
+
 - [x] Collection grid view
 - [x] Card detail modal with edit functionality
 - [x] Add card functionality (search + add)
@@ -314,11 +343,13 @@ src/
 - [x] Progressive enhancement (shareable URLs, browser history)
 
 ### Phase 3: Enhanced Features (Week 3)
+
 - [ ] Search and filter implementation
 - [ ] Sorting functionality
 - [ ] Statistics dashboard
 
 ### Phase 4: Polish (Week 4)
+
 - [x] Dark mode implementation
 - [x] Responsive design refinement
 - [x] Error handling and loading states
@@ -330,6 +361,7 @@ src/
 ## Future Enhancements (Post-MVP)
 
 ### Phase 2: Authentication & Security
+
 - **User Authentication** (Supabase Auth)
   - Email/password sign up and login
   - Social login (Google, Apple)
@@ -343,6 +375,7 @@ src/
   - Privacy settings
 
 ### Phase 3: Social Features
+
 - **Friending System**
   - Send/accept friend requests
   - Friends list
@@ -357,6 +390,7 @@ src/
   - Trade notifications
 
 ### Phase 4: Enhanced Collection Features
+
 - **Wishlist**
   - Mark cards as "wanted"
   - Track wishlist separately from collection
@@ -380,6 +414,7 @@ src/
   - Binders/folders organization
 
 ### Phase 5: Advanced Features
+
 - **Offline Enhancements**
   - Full offline card search (download entire TCG database to IndexedDB)
     - ~60MB metadata download for ~20,000+ cards
@@ -422,6 +457,7 @@ src/
 Ideas and features to explore but not yet scheduled into specific phases:
 
 ### User Roles & Permissions
+
 - **Role hierarchy**: User (child) → Parent → Site Admin
 - **Parent controls**:
   - View child's collection (read-only or full access)
@@ -437,9 +473,11 @@ Ideas and features to explore but not yet scheduled into specific phases:
 - **Implementation timing**: Likely Phase 3-4, after authentication is stable
 
 ### Other Ideas
+
 - TBD (add ideas here as they come up)
 
 ## Performance Considerations
+
 - Image optimization using Next.js Image component
 - Lazy loading for card images
 - Virtual scrolling for large collections (if needed)
@@ -450,6 +488,7 @@ Ideas and features to explore but not yet scheduled into specific phases:
 ## Analytics & Tracking
 
 ### Platform: Vercel Analytics
+
 - **Built-in analytics** from Vercel (hosting platform)
 - **Privacy-friendly**: No cookies, GDPR compliant by default
 - **Zero configuration**: Enable in Vercel dashboard
@@ -458,15 +497,18 @@ Ideas and features to explore but not yet scheduled into specific phases:
 ### Custom Event Tracking (Phased Approach)
 
 #### Phase 1 (MVP) - Core Metrics
+
 ```typescript
 track('card_added', { cardName, cardId, rarity, set });
 track('card_deleted', { cardName, cardId });
 track('search_performed', { query, resultsCount });
 track('sync_completed', { itemsSynced, duration });
 ```
+
 **Purpose:** Understand core collection behavior and sync reliability
 
 #### Phase 2 - Engagement Metrics
+
 ```typescript
 track('card_detail_viewed', { cardName, cardId });
 track('filter_applied', { filterType, filterValue });
@@ -474,9 +516,11 @@ track('sort_changed', { sortBy });
 track('user_switched', { fromUserId, toUserId });
 track('stats_viewed');
 ```
+
 **Purpose:** Measure feature usage and user engagement
 
 #### Phase 3+ - Advanced Insights
+
 ```typescript
 track('offline_action', { action, queuedForSync });
 track('sync_conflict', { resolved });
@@ -484,9 +528,11 @@ track('api_error', { endpoint, errorType });
 track('cache_hit', { cacheType, query });
 track('card_edited', { cardId, field });
 ```
+
 **Purpose:** Monitor offline behavior, performance, and error patterns
 
 ### Key Insights to Track
+
 - **Collection Growth**: Cards added per week/month, most added cards
 - **Search Patterns**: Popular searches, filter usage, search success rate
 - **Sync Health**: Average sync time, success rate, offline usage
@@ -495,6 +541,7 @@ track('card_edited', { cardId, field });
 - **Performance**: Cache hit rates, API response times, error rates
 
 ### Implementation
+
 ```typescript
 // app/layout.tsx
 import { Analytics } from '@vercel/analytics/react';
@@ -526,6 +573,7 @@ export function trackCardAdded(card: PokemonCard) {
 ## Accessibility Requirements
 
 ### Core Principles
+
 - **Progressive Enhancement**: Everything should work without JavaScript first
   - Forms submit via standard HTML form actions
   - Links navigate using native browser behavior
@@ -535,6 +583,7 @@ export function trackCardAdded(card: PokemonCard) {
 - **Screen reader friendly**: Meaningful labels, announcements, and structure
 
 ### Implementation Guidelines
+
 - **Buttons vs Links**:
   - Use `<button>` for actions (add card, delete, toggle)
   - Use `<a>` for navigation (view card, go to stats)
@@ -562,6 +611,7 @@ export function trackCardAdded(card: PokemonCard) {
   - aria-expanded for collapsible sections
 
 ### Testing Checklist
+
 - [ ] Navigate entire app using only keyboard
 - [ ] Test with screen reader (VoiceOver on Mac/iPad, NVDA on Windows)
 - [ ] Verify color contrast with browser DevTools
@@ -570,6 +620,7 @@ export function trackCardAdded(card: PokemonCard) {
 - [ ] Verify focus indicators are visible in all states
 
 ## Testing Strategy
+
 - Manual testing during development
 - Test on multiple devices (mobile, tablet, desktop)
 - Test both light and dark modes
@@ -578,6 +629,7 @@ export function trackCardAdded(card: PokemonCard) {
 - Cross-browser testing (Chrome, Safari, Firefox)
 
 ## Deployment
+
 - **Platform**: Vercel (recommended for Next.js)
 - **Domain**: TBD
 - **Environment Variables**:
@@ -586,6 +638,7 @@ export function trackCardAdded(card: PokemonCard) {
 - **Dev Command**: `npm run dev`
 
 ## Success Metrics
+
 - Application loads in < 2 seconds
 - Smooth interactions (no janky animations)
 - Works offline (cached data)
