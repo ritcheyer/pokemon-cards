@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { syncUsersFromServer } from '@/lib/db/sync';
 import type { User } from '@/lib/types';
 import { CardGrid } from '@/components/features/CardGrid';
 
-export default function UserCollectionPage({ params }: { params: { userId: string } }) {
+export default function UserCollectionPage({ params }: { params: Promise<{ userId: string }> }) {
   const router = useRouter();
+  const { userId } = use(params);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +17,7 @@ export default function UserCollectionPage({ params }: { params: { userId: strin
     const loadUser = async () => {
       try {
         const users = await syncUsersFromServer();
-        const foundUser = users.find(u => u.id === params.userId);
+        const foundUser = users.find(u => u.id === userId);
         
         if (!foundUser) {
           setError('User not found');
@@ -34,7 +35,7 @@ export default function UserCollectionPage({ params }: { params: { userId: strin
     };
 
     loadUser();
-  }, [params.userId, router]);
+  }, [userId, router]);
 
   if (loading) {
     return (
