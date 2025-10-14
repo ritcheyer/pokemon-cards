@@ -8,6 +8,7 @@
 /* Modal */
 .modal {
   @apply w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl flex flex-col;
+
   max-height: 90vh;
 }
 
@@ -47,6 +48,7 @@
 
 .closeButton {
   @apply text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-4xl leading-none transition-colors cursor-pointer;
+
   background: none;
   border: none;
   padding: 0;
