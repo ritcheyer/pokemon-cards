@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { CollectionCard, PokemonCard } from '@/lib/types';
 import { updateCardInCollection, deleteCardFromCollection } from '@/lib/db/sync';
@@ -41,6 +41,13 @@ export function CardDetailModal({
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Update local state when collectionCard prop changes (after save)
+  useEffect(() => {
+    setQuantity(collectionCard.quantity);
+    setCondition(collectionCard.condition);
+    setNotes(collectionCard.notes || '');
+  }, [collectionCard]);
 
   const handleSave = async () => {
     setSaving(true);

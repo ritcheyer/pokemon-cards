@@ -165,10 +165,16 @@ export function CardGrid({ userId }: CardGridProps) {
         onUpdate={async () => {
           const collection = await syncCollectionFromServer(userId);
           setCollectionCards(collection);
+          // Update the selected card with the refreshed data
+          const updatedCard = collection.find(c => c.id === selectedCard.collection.id);
+          if (updatedCard) {
+            setSelectedCard({ collection: updatedCard, pokemon: selectedCard.pokemon });
+          }
         }}
         onDelete={async () => {
           const collection = await syncCollectionFromServer(userId);
           setCollectionCards(collection);
+          setSelectedCard(null); // Close modal after delete
         }}
       />
     )}
