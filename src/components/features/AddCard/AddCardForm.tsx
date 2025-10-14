@@ -2,6 +2,9 @@
 
 import Image from 'next/image';
 import { PokemonCard, CollectionCard } from '@/lib/types';
+import { formatCondition } from '@/lib/utils';
+import { CARD_CONDITIONS } from '@/lib/constants';
+import { Input, Select, Textarea } from '@/components/ui';
 import styles from './AddCardForm.module.css';
 
 interface AddCardFormProps {
@@ -15,15 +18,6 @@ interface AddCardFormProps {
   adding: boolean;
 }
 
-const CONDITIONS: CollectionCard['condition'][] = [
-  'mint',
-  'near-mint',
-  'excellent',
-  'good',
-  'played',
-  'poor',
-];
-
 export function AddCardForm({
   card,
   quantity,
@@ -34,12 +28,6 @@ export function AddCardForm({
   onNotesChange,
   adding,
 }: AddCardFormProps) {
-  const formatCondition = (cond: string) => {
-    return cond
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
 
   return (
     <div className={styles.container}>
@@ -59,49 +47,37 @@ export function AddCardForm({
       </div>
 
       <div className={styles.form}>
-        <div className={styles.field}>
-          <label htmlFor="quantity">Quantity</label>
-          <input
-            id="quantity"
-            type="number"
-            min="1"
-            max="99"
-            value={quantity}
-            onChange={(e) => onQuantityChange(parseInt(e.target.value) || 1)}
-            className={styles.input}
-            disabled={adding}
-          />
-        </div>
+        <Input
+          label="Quantity"
+          type="number"
+          min="1"
+          max="99"
+          value={quantity}
+          onChange={(e) => onQuantityChange(parseInt(e.target.value) || 1)}
+          disabled={adding}
+        />
 
-        <div className={styles.field}>
-          <label htmlFor="condition">Condition</label>
-          <select
-            id="condition"
-            value={condition}
-            onChange={(e) => onConditionChange(e.target.value as CollectionCard['condition'])}
-            className={styles.select}
-            disabled={adding}
-          >
-            {CONDITIONS.map((cond) => (
-              <option key={cond} value={cond}>
-                {formatCondition(cond)}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Select
+          label="Condition"
+          value={condition}
+          onChange={(e) => onConditionChange(e.target.value as CollectionCard['condition'])}
+          disabled={adding}
+        >
+          {CARD_CONDITIONS.map((cond) => (
+            <option key={cond} value={cond}>
+              {formatCondition(cond)}
+            </option>
+          ))}
+        </Select>
 
-        <div className={styles.field}>
-          <label htmlFor="notes">Notes (optional)</label>
-          <textarea
-            id="notes"
-            value={notes}
-            onChange={(e) => onNotesChange(e.target.value)}
-            placeholder="Add any notes about this card..."
-            className={styles.textarea}
-            rows={3}
-            disabled={adding}
-          />
-        </div>
+        <Textarea
+          label="Notes (optional)"
+          value={notes}
+          onChange={(e) => onNotesChange(e.target.value)}
+          placeholder="Add any notes about this card..."
+          rows={3}
+          disabled={adding}
+        />
       </div>
     </div>
   );

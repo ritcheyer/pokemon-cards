@@ -1,0 +1,64 @@
+@reference "../../../app/globals.css";
+
+/* Overlay */
+.overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50;
+}
+
+/* Modal */
+.modal {
+  @apply w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl flex flex-col;
+  max-height: 90vh;
+}
+
+/* Max Width Variants */
+.maxWidthSm {
+  max-width: 24rem; /* 384px */
+}
+
+.maxWidthMd {
+  max-width: 28rem; /* 448px */
+}
+
+.maxWidthLg {
+  max-width: 32rem; /* 512px */
+}
+
+.maxWidthXl {
+  max-width: 36rem; /* 576px */
+}
+
+.maxWidth2xl {
+  max-width: 42rem; /* 672px */
+}
+
+.maxWidth4xl {
+  max-width: 56rem; /* 896px */
+}
+
+/* Header */
+.header {
+  @apply flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0;
+}
+
+.header h2 {
+  @apply text-2xl font-bold text-gray-900 dark:text-gray-100;
+}
+
+.closeButton {
+  @apply text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-4xl leading-none transition-colors cursor-pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Content */
+.content {
+  @apply flex-1 overflow-y-auto p-6;
+}
+
+/* Footer */
+.footer {
+  @apply flex gap-3 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex-shrink-0;
+}

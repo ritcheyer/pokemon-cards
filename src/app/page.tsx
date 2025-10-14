@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { syncUsersFromServer, createUser } from '@/lib/db/sync';
 import type { User } from '@/lib/types';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
+import { Button, Input } from '@/components/ui';
 
 export default function Home() {
   const router = useRouter();
@@ -142,38 +143,36 @@ export default function Home() {
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-sm">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Create New Profile</h2>
                 <form onSubmit={handleCreateUser}>
-                  <label className="block mb-4">
-                    <span className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</span>
-                    <input
+                  <div className="mb-4">
+                    <Input
+                      label="Name"
                       type="text"
                       value={newUserName}
                       onChange={(e) => setNewUserName(e.target.value)}
                       placeholder="Enter your name"
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                      autoFocus
                       disabled={loading}
                     />
-                  </label>
+                  </div>
                   <div className="flex gap-3">
-                    <button
+                    <Button
                       type="button"
+                      variant="secondary"
                       onClick={() => {
                         setShowCreateUser(false);
                         setNewUserName('');
                         setError(null);
                       }}
-                      className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
                       disabled={loading}
                     >
                       Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="submit"
+                      variant="primary"
                       disabled={loading || !newUserName.trim()}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                     >
                       {loading ? 'Creating...' : 'Create'}
-                    </button>
+                    </Button>
                   </div>
                 </form>
               </div>

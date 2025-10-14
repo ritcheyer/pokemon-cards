@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { syncUsersFromServer } from '@/lib/db/sync';
 import type { User } from '@/lib/types';
 import { CardGrid } from '@/components/features/CardGrid';
@@ -76,12 +77,12 @@ export default function UserCollectionPage({ params }: { params: Promise<{ userI
               <p className="text-gray-600 dark:text-gray-400">Welcome back!</p>
             </div>
           </div>
-          <button
-            onClick={() => router.push('/')}
-            className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+          <Link
+            href="/"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors font-semibold"
           >
             Switch User
-          </button>
+          </Link>
         </div>
 
         <CardGrid userId={user.id} />

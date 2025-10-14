@@ -2,25 +2,18 @@
 
 import Image from 'next/image';
 import { CollectionCard, PokemonCard } from '@/lib/types';
+import { formatCondition } from '@/lib/utils';
 import styles from './CardItem.module.css';
 
 interface CardItemProps {
   collectionCard: CollectionCard;
   pokemonCard: PokemonCard;
-  onClick?: () => void;
+  onClick: () => void;
 }
 
 export function CardItem({ collectionCard, pokemonCard, onClick }: CardItemProps) {
   const { quantity, condition } = collectionCard;
   const { name, images, set, rarity } = pokemonCard;
-
-  // Format condition for display
-  const formatCondition = (cond: string) => {
-    return cond
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
 
   return (
     <div className={styles.card} onClick={onClick} role="button" tabIndex={0}>

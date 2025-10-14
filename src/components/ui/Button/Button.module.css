@@ -1,0 +1,28 @@
+@reference "../../../app/globals.css";
+
+.button {
+  @apply px-4 py-2 rounded-lg transition-colors font-semibold cursor-pointer;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.secondary {
+  @apply border border-gray-300 dark:border-gray-600;
+  @apply bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300;
+  @apply hover:bg-gray-50 dark:hover:bg-gray-700;
+}
+
+.danger {
+  @apply bg-red-600 text-white hover:bg-red-700;
+}
+
+.flexOne {
+  @apply flex-1;
+}
+
+.fullWidth {
+  @apply w-full;
+}

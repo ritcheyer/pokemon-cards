@@ -6,6 +6,7 @@ import { searchCards } from '@/lib/api/pokemon-tcg';
 import { addCardToCollection } from '@/lib/db/sync';
 import { debounce } from '@/lib/utils';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
+import { Button } from '@/components/ui';
 import { SearchResults } from './SearchResults';
 import { AddCardForm } from './AddCardForm';
 import styles from './AddCardModal.module.css';
@@ -161,13 +162,14 @@ export function AddCardModal({ userId, onClose, onCardAdded }: AddCardModalProps
                 className={styles.searchInput}
                 autoFocus
               />
-              <button
+              <Button
                 type="submit"
                 disabled={searching || !searchQuery.trim()}
-                className={styles.searchButton}
+                variant="primary"
+                flex={false}
               >
                 {searching ? 'Searching...' : 'Search'}
-              </button>
+              </Button>
             </form>
 
             <SearchResults
@@ -193,20 +195,20 @@ export function AddCardModal({ userId, onClose, onCardAdded }: AddCardModalProps
         {/* Sticky Footer - Only show when card is selected */}
         {selectedCard && (
           <div className={styles.footer}>
-            <button
+            <Button
               onClick={handleBack}
-              className={styles.backButton}
+              variant="secondary"
               disabled={adding}
             >
               Back
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleAddCard}
-              className={styles.addButton}
+              variant="primary"
               disabled={adding}
             >
               {adding ? 'Adding...' : 'Add to Collection'}
-            </button>
+            </Button>
           </div>
         )}
       </div>

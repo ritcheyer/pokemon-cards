@@ -5,7 +5,9 @@ import Image from 'next/image';
 import { CollectionCard, PokemonCard } from '@/lib/types';
 import { updateCardInCollection, deleteCardFromCollection } from '@/lib/db/sync';
 import { formatCondition } from '@/lib/utils';
+import { CARD_CONDITIONS } from '@/lib/constants';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
+import { Button, Input, Select, Textarea } from '@/components/ui';
 import styles from './CardDetailModal.module.css';
 
 interface CardDetailModalProps {
@@ -16,15 +18,6 @@ interface CardDetailModalProps {
   onUpdate: () => void;
   onDelete: () => void;
 }
-
-const CONDITIONS: CollectionCard['condition'][] = [
-  'mint',
-  'near-mint',
-  'excellent',
-  'good',
-  'played',
-  'poor',
-];
 
 export function CardDetailModal({
   collectionCard,
@@ -98,7 +91,11 @@ export function CardDetailModal({
   };
 
   // Close modal on escape key (but not when editing to avoid accidental closes)
-  useEscapeKey(onClose, !isEditing);
+  useEscapeKey(() => {
+    if (!isEditing) {
+      onClose();
+    }
+  });
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -171,46 +168,34 @@ export function CardDetailModal({
                 <h3>Collection Info</h3>
                 {isEditing ? (
                   <div className={styles.editForm}>
-                    <div className={styles.field}>
-                      <label htmlFor="edit-quantity">Quantity</label>
-                      <input
-                        id="edit-quantity"
-                        type="number"
-                        min="1"
-                        max="99"
-                        value={quantity}
-                        onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                        className={styles.input}
-                      />
-                    </div>
+                    <Input
+                      label="Quantity"
+                      type="number"
+                      min="1"
+                      max="99"
+                      value={quantity}
+                      onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                    />
 
-                    <div className={styles.field}>
-                      <label htmlFor="edit-condition">Condition</label>
-                      <select
-                        id="edit-condition"
-                        value={condition}
-                        onChange={(e) => setCondition(e.target.value as CollectionCard['condition'])}
-                        className={styles.select}
-                      >
-                        {CONDITIONS.map((cond) => (
-                          <option key={cond} value={cond}>
-                            {formatCondition(cond)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <Select
+                      label="Condition"
+                      value={condition}
+                      onChange={(e) => setCondition(e.target.value as CollectionCard['condition'])}
+                    >
+                      {CARD_CONDITIONS.map((cond) => (
+                        <option key={cond} value={cond}>
+                          {formatCondition(cond)}
+                        </option>
+                      ))}
+                    </Select>
 
-                    <div className={styles.field}>
-                      <label htmlFor="edit-notes">Notes</label>
-                      <textarea
-                        id="edit-notes"
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                        placeholder="Add any notes..."
-                        className={styles.textarea}
-                        rows={3}
-                      />
-                    </div>
+                    <Textarea
+                      label="Notes (optional)"
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      placeholder="Add any notes..."
+                      rows={3}
+                    />
                   </div>
                 ) : (
                   <>
@@ -239,36 +224,21 @@ export function CardDetailModal({
         <div className={styles.footer}>
           {isEditing ? (
             <>
-              <button
-                onClick={handleCancel}
-                className={styles.cancelButton}
-                disabled={saving}
-              >
+              <Button variant="secondary" onClick={handleCancel} disabled={saving}>
                 Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className={styles.saveButton}
-                disabled={saving}
-              >
+              </Button>
+              <Button variant="primary" onClick={handleSave} disabled={saving}>
                 {saving ? 'Saving...' : 'Save Changes'}
-              </button>
+              </Button>
             </>
           ) : (
             <>
-              <button
-                onClick={handleDelete}
-                className={styles.deleteButton}
-                disabled={deleting}
-              >
+              <Button variant="danger" onClick={handleDelete} disabled={deleting}>
                 {deleting ? 'Deleting...' : 'Delete'}
-              </button>
-              <button
-                onClick={() => setIsEditing(true)}
-                className={styles.editButton}
-              >
+              </Button>
+              <Button variant="secondary" onClick={() => setIsEditing(true)}>
                 Edit
-              </button>
+              </Button>
             </>
           )}
         </div>
