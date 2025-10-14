@@ -1,5 +1,4 @@
 import { CARD_CONDITIONS } from './constants';
-import type { CardCondition } from './types';
 
 describe('CARD_CONDITIONS', () => {
   it('contains all expected conditions', () => {

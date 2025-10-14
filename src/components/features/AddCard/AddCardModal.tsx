@@ -31,6 +31,7 @@ export function AddCardModal({ userId, onClose, onCardAdded }: AddCardModalProps
   const [notes, setNotes] = useState('');
 
   // Debounced search function - memoize the debounced function itself
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce(async (query: string) => {
       if (!query.trim() || query.length < 2) {
@@ -55,7 +56,7 @@ export function AddCardModal({ userId, onClose, onCardAdded }: AddCardModalProps
         setSearching(false);
       }
     }, 300), // Reduced from 500ms to 300ms for faster feel
-    []
+    [] // Empty deps intentional - we want debounce to persist across renders
   );
 
   const handleSearch = async (e: React.FormEvent) => {

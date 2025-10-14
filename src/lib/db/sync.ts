@@ -2,6 +2,8 @@
 import { supabase } from './supabase';
 import type { User, CollectionCard, UserRow, CollectionCardRow } from '../types';
 import { userRowToUser, collectionCardRowToCollectionCard, collectionCardToRow } from '../types';
+// Database type imported for type annotations
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Database } from './database.types';
 import {
   getCachedUsers,
@@ -182,7 +184,7 @@ export async function addCardToCollection(
     const rowData = collectionCardToRow(newCard);
     const { data, error } = await supabase
       .from('collection_cards')
-      // @ts-ignore - Supabase type inference issue with generated types
+      // @ts-expect-error - Supabase type inference issue with generated types
       .insert(rowData)
       .select()
       .single();
@@ -237,7 +239,7 @@ export async function updateCardInCollection(
     };
     const { data, error } = await supabase
       .from('collection_cards')
-      // @ts-ignore - Supabase type inference issue with generated types
+      // @ts-expect-error - Supabase type inference issue with generated types
       .update(updateData)
       .eq('id', cardId)
       .select()
@@ -321,7 +323,7 @@ export async function syncPendingChanges(): Promise<void> {
           const rowData = collectionCardToRow(change.data);
           await supabase
             .from('collection_cards')
-            // @ts-ignore - Supabase type inference issue with generated types
+            // @ts-expect-error - Supabase type inference issue with generated types
             .insert(rowData);
           break;
         }
@@ -333,7 +335,7 @@ export async function syncPendingChanges(): Promise<void> {
           };
           await supabase
             .from('collection_cards')
-            // @ts-ignore - Supabase type inference issue with generated types
+            // @ts-expect-error - Supabase type inference issue with generated types
             .update(updateData)
             .eq('id', change.data.id);
           break;

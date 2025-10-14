@@ -66,7 +66,7 @@ describe('Input', () => {
   });
 
   it('displays error styling when error is present', () => {
-    const { container } = render(<Input error="Error message" />);
+    render(<Input error="Error message" />);
     const errorText = screen.getByText(/error message/i);
     expect(errorText).toBeInTheDocument();
     expect(errorText).toHaveClass('error');
