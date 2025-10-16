@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { syncUsersFromServer, createUser } from '@/lib/db/sync';
 import type { User } from '@/lib/types';
 import { useEscapeKey } from '@/hooks/useEscapeKey';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, Spinner } from '@/components/ui';
 
 export default function Home() {
   const router = useRouter();
@@ -89,9 +89,8 @@ export default function Home() {
           )}
 
           {loading ? (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Loading users...</p>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+              <Spinner text="Loading users..." />
             </div>
           ) : (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">

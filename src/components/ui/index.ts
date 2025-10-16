@@ -13,3 +13,6 @@ export type { TextareaProps } from './Textarea';
 
 export { Modal } from './Modal';
 export type { ModalProps } from './Modal';
+
+export { Spinner } from './Spinner';
+export type { SpinnerProps } from './Spinner';

@@ -1,0 +1,35 @@
+@reference "../../../app/globals.css";
+
+/* Container */
+.container {
+  @apply flex flex-col items-center gap-3;
+}
+
+.centeredContainer {
+  @apply flex flex-col items-center justify-center gap-3 min-h-[400px];
+}
+
+/* Spinner */
+.spinner {
+  @apply border-4 border-gray-200 dark:border-gray-400 rounded-full animate-spin;
+
+  border-top-color: rgb(37 99 235); /* blue-600 - works in both light and dark */
+}
+
+/* Sizes */
+.sm {
+  @apply w-6 h-6 border-2;
+}
+
+.md {
+  @apply w-12 h-12 border-4;
+}
+
+.lg {
+  @apply w-16 h-16 border-4;
+}
+
+/* Text */
+.text {
+  @apply text-gray-600 dark:text-gray-400;
+}

@@ -7,6 +7,7 @@ import { getCardsByIds } from '@/lib/api/pokemon-tcg';
 import { CardItem } from './CardItem';
 import { AddCardModal } from '../AddCard';
 import { CardDetailModal } from '../CardDetail';
+import { Spinner } from '@/components/ui';
 import styles from './CardGrid.module.css';
 
 interface CardGridProps {
@@ -77,8 +78,7 @@ export function CardGrid({ userId }: CardGridProps) {
   if (loading) {
     return (
       <div className={styles.loadingState}>
-        <div className={styles.spinner} aria-label="Loading collection" />
-        <p>Loading your collection...</p>
+        <Spinner text="Loading your collection..." centered />
       </div>
     );
   }

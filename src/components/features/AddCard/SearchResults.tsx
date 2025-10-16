@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { PokemonCard } from '@/lib/types';
+import { Spinner } from '@/components/ui';
 import styles from './SearchResults.module.css';
 
 interface SearchResultsProps {
@@ -14,8 +15,7 @@ export function SearchResults({ results, searching, onSelectCard }: SearchResult
   if (searching) {
     return (
       <div className={styles.loadingState}>
-        <div className={styles.spinner} aria-label="Searching" />
-        <p>Searching for cards...</p>
+        <Spinner text="Searching for cards..." centered />
       </div>
     );
   }
