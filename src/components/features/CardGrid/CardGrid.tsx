@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { CollectionCard, PokemonCard } from '@/lib/types';
+import { CollectionCard, PokemonCard, CardCondition } from '@/lib/types';
 import { syncCollectionFromServer } from '@/lib/db/sync';
 import { getCardsByIds } from '@/lib/api/pokemon-tcg';
 import { CardItem } from './CardItem';
@@ -24,6 +24,9 @@ export function CardGrid({ userId }: CardGridProps) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedCard, setSelectedCard] = useState<{ collection: CollectionCard; pokemon: PokemonCard } | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('date-newest');
+  const [filterSet, setFilterSet] = useState<string>('all');
+  const [filterRarity, setFilterRarity] = useState<string>('all');
+  const [filterCondition, setFilterCondition] = useState<string>('all');
 
   useEffect(() => {
     const loadCollection = async () => {
@@ -118,8 +121,37 @@ export function CardGrid({ userId }: CardGridProps) {
     );
   }
 
+  // Get unique values for filters
+  const uniqueSets = Array.from(new Set(
+    collectionCards
+      .map(c => pokemonCards.get(c.cardId)?.set.name)
+      .filter(Boolean)
+  )).sort();
+  
+  const uniqueRarities = Array.from(new Set(
+    collectionCards
+      .map(c => pokemonCards.get(c.cardId)?.rarity)
+      .filter(Boolean)
+  )).sort();
+  
+  const uniqueConditions: CardCondition[] = Array.from(new Set(
+    collectionCards.map(c => c.condition)
+  )).sort();
+
+  // Filter cards
+  const filteredCards = collectionCards.filter((collectionCard) => {
+    const pokemonCard = pokemonCards.get(collectionCard.cardId);
+    if (!pokemonCard) return false;
+    
+    if (filterSet !== 'all' && pokemonCard.set.name !== filterSet) return false;
+    if (filterRarity !== 'all' && pokemonCard.rarity !== filterRarity) return false;
+    if (filterCondition !== 'all' && collectionCard.condition !== filterCondition) return false;
+    
+    return true;
+  });
+
   // Sort cards
-  const sortedCards = [...collectionCards].sort((a, b) => {
+  const sortedCards = [...filteredCards].sort((a, b) => {
     const cardA = pokemonCards.get(a.cardId);
     const cardB = pokemonCards.get(b.cardId);
     
@@ -155,27 +187,63 @@ export function CardGrid({ userId }: CardGridProps) {
           <div>
             <h2>Your Collection</h2>
             <p className={styles.count}>
-              {collectionCards.length} {collectionCards.length === 1 ? 'card' : 'cards'}
+              Showing {sortedCards.length} of {collectionCards.length} {collectionCards.length === 1 ? 'card' : 'cards'}
             </p>
           </div>
-          <div className={styles.controls}>
-            <Select
-              label="Sort by"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortOption)}
-            >
-              <option value="date-newest">Newest First</option>
-              <option value="date-oldest">Oldest First</option>
-              <option value="name-asc">Name (A-Z)</option>
-              <option value="name-desc">Name (Z-A)</option>
-              <option value="set-asc">Set (A-Z)</option>
-              <option value="set-desc">Set (Z-A)</option>
-              <option value="rarity">Rarity (High to Low)</option>
-            </Select>
-            <button className={styles.addButton} onClick={() => setShowAddModal(true)}>
-              + Add Card
-            </button>
-          </div>
+          <button className={styles.addButton} onClick={() => setShowAddModal(true)}>
+            + Add Card
+          </button>
+        </div>
+
+        <div className={styles.filters}>
+          <Select
+            label="Filter by Set"
+            value={filterSet}
+            onChange={(e) => setFilterSet(e.target.value)}
+          >
+            <option value="all">All Sets</option>
+            {uniqueSets.map(set => (
+              <option key={set} value={set}>{set}</option>
+            ))}
+          </Select>
+
+          <Select
+            label="Filter by Rarity"
+            value={filterRarity}
+            onChange={(e) => setFilterRarity(e.target.value)}
+          >
+            <option value="all">All Rarities</option>
+            {uniqueRarities.map(rarity => (
+              <option key={rarity} value={rarity}>{rarity}</option>
+            ))}
+          </Select>
+
+          <Select
+            label="Filter by Condition"
+            value={filterCondition}
+            onChange={(e) => setFilterCondition(e.target.value)}
+          >
+            <option value="all">All Conditions</option>
+            {uniqueConditions.map(condition => (
+              <option key={condition} value={condition}>
+                {condition.charAt(0).toUpperCase() + condition.slice(1).replace('-', ' ')}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            label="Sort by"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortOption)}
+          >
+            <option value="date-newest">Newest First</option>
+            <option value="date-oldest">Oldest First</option>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="set-asc">Set (A-Z)</option>
+            <option value="set-desc">Set (Z-A)</option>
+            <option value="rarity">Rarity (High to Low)</option>
+          </Select>
         </div>
 
       <div className={styles.grid}>

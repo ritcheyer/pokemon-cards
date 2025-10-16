@@ -7,7 +7,7 @@
 
 /* Header */
 .header {
-  @apply flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6;
+  @apply flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4;
 }
 
 .header > div h2 {
@@ -18,8 +18,9 @@
   @apply text-sm text-gray-600 dark:text-gray-400;
 }
 
-.controls {
-  @apply flex flex-col sm:flex-row items-stretch sm:items-end gap-3;
+/* Filters */
+.filters {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6;
 }
 
 /* Grid */
