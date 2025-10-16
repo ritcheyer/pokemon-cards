@@ -16,3 +16,6 @@ export type { ModalProps } from './Modal';
 
 export { Spinner } from './Spinner';
 export type { SpinnerProps } from './Spinner';
+
+export { EmptyState } from './EmptyState';
+export type { EmptyStateProps } from './EmptyState';

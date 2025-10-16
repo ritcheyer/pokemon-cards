@@ -7,7 +7,7 @@ import { getCardsByIds } from '@/lib/api/pokemon-tcg';
 import { CardItem } from './CardItem';
 import { AddCardModal } from '../AddCard';
 import { CardDetailModal } from '../CardDetail';
-import { Spinner } from '@/components/ui';
+import { Spinner, EmptyState } from '@/components/ui';
 import styles from './CardGrid.module.css';
 
 interface CardGridProps {
@@ -95,13 +95,15 @@ export function CardGrid({ userId }: CardGridProps) {
   if (collectionCards.length === 0) {
     return (
       <>
-        <div className={styles.emptyState}>
-          <h2>No cards yet!</h2>
-          <p>Search to add your first card to your collection.</p>
-          <button className={styles.addButton} onClick={() => setShowAddModal(true)}>
-            Add Card
-          </button>
-        </div>
+        <EmptyState
+          icon="🎴"
+          title="No cards yet!"
+          description="Search to add your first card to your collection."
+          action={{
+            label: "Add Card",
+            onClick: () => setShowAddModal(true)
+          }}
+        />
         {showAddModal && (
           <AddCardModal
             userId={userId}

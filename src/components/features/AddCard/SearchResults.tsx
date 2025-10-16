@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { PokemonCard } from '@/lib/types';
-import { Spinner } from '@/components/ui';
+import { Spinner, EmptyState } from '@/components/ui';
 import styles from './SearchResults.module.css';
 
 interface SearchResultsProps {
@@ -22,9 +22,11 @@ export function SearchResults({ results, searching, onSelectCard }: SearchResult
 
   if (results.length === 0) {
     return (
-      <div className={styles.emptyState}>
-        <p>No results yet. Try searching for a card!</p>
-      </div>
+      <EmptyState
+        icon="🔍"
+        title="No results yet"
+        description="Try searching for a card!"
+      />
     );
   }
 
